@@ -37,9 +37,12 @@
 # R Environment Variables
 .Renviron
 
-
 # translation temp files
 po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+
+# data
+data/
