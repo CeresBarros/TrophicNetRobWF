@@ -1,0 +1,457 @@
+---
+title: "Workflow"
+author: "Ceres Barros"
+date: August 14 2024
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+## requires
+library(ToolsCB)
+library(exactextractr)
+library(raster)
+library(rredlist)
+library(data.table)
+library(reproducible)
+library(dplyr)
+
+.libPaths("packages/")
+options(repos =  c("predictiveecology.r-universe.dev", getOption("repos")))
+
+if (!"Require" %in% installed.packages())
+  install.packages("Require", lib = "packages/")
+
+Require::Require(c(
+  "raster",
+  "foreign",
+  "ggplot2",
+  "ggExtra",
+  "ggpubr",
+  "data.table",
+  "gamlss",
+  "gamlss.inf",
+  "lme4",
+  "dplyr",
+  "sf",
+  "future",
+  "future.apply",
+  "caret",
+  "ade4",
+  "RSQLite",
+  "PredictiveEcology/reproducible@b4664aa7b9e51e9135a3b5f408ccde2de2d44a21",
+  "CeresBarros/ToolsCB"
+), 
+libPaths = file.path("packages/"))
+
+if (!"Require" %in% installed.packages())
+  install.packages("Require", lib = "packages/")
+
+Require::Require(c(
+  "ggplot2",
+  "ggExtra",
+  "ggpubr", 
+  "patchwork"
+),
+libPaths = file.path("packages/"))
+
+Require::Require("qs", libPaths = file.path("packages/"), require = FALSE)
+
+
+options("future.globals.maxSize" = +Inf)
+options("reproducible.useNewDigestAlgorithm" = 2)
+options("reproducible.cachePath" = "cache/runs2021")
+
+
+## requires
+# .libPaths("/home/cbarros/Networks/R/4.0/")
+.libPaths("packages/")
+if (!"Require" %in% installed.packages())
+  install.packages("Require", lib = "packages/")
+
+Require::Require(c("PredictiveEcology/reproducible@b4664aa7b9e51e9135a3b5f408ccde2de2d44a21",
+                   "CeresBarros/ToolsCB",
+                   "factoextra"), 
+                 libPaths = file.path("packages/")
+                 # libPaths = "/home/cbarros/Networks/R/4.0/"
+                 )
+
+options(reproducible.useNewDigestAlgorithm = 2)
+options(reproducible.cachePath = "cache/runs2021")
+
+Require::Require(c("PredictiveEcology/reproducible@b4664aa7b9e51e9135a3b5f408ccde2de2d44a21",
+                   "CeresBarros/ToolsCB"), 
+                 libPaths = file.path("packages/"))
+
+memory.limit(size = 16000)
+options(nwarnings = 100000000, max.print = 100000000)
+options(reproducible.cachePath = "cache/")
+options(reproducible.useGDAL = FALSE)
+options(reproducible.useNewDigestAlgorithm = 2)
+options(future.globals.maxSize = 3e+9)
+
+
+
+options(repos =  c("predictiveecology.r-universe.dev", 
+                   "CRAN" = "https://cran.rstudio.com/"))
+.libPaths("packages/")
+
+if (!"Require" %in% installed.packages())
+  install.packages("Require", lib = "packages/")
+
+Require::Require(c(
+  "cheddar", 
+  "colorspace",
+  "data.table",
+  "future",
+  "future.apply",
+  "ggplot2",
+  "ggExtra",
+  "ggpubr",
+  "PredictiveEcology/reproducible@b4664aa7b9e51e9135a3b5f408ccde2de2d44a21",
+  "CeresBarros/ToolsCB@development (HEAD)"
+),
+libPaths = file.path("packages/"))
+
+Require::Require("qs", libPaths = file.path("packages/"), require = FALSE)
+
+options("future.globals.maxSize" = +Inf)
+options("reproducible.useNewDigestAlgorithm" = 2)
+options("reproducible.cachePath" = "cache/runs2021")
+
+source("Rscripts/Tools/compilePextSext.R")
+source("Rscripts/Tools/summStatsByPixSpp.R")
+source("Rscripts/Tools/plotFuns.R")
+
+
+```
+
+```{r}
+## 10K grid dbf
+mask10kID <- foreign::read.dbf("Masks/10k/reference_grid_10km.img.vat.dbf") ## pixel IDs
+## 10K grid poly
+mask10kSHP <- shapefile("Masks/10k/Shapefiles/grid_10km/grid_10Km.shp")
+## 10K grid raster in final projection
+mask10k <- raster("Masks/10k/reference_grid_10km.img")
+
+mask10k[] <- mask10k[]  ## bring raster to memory
+
+## lakes raster
+## TODO: put data in Zenodo and download from there
+lakes <- raster("data/Habitats/wise_large_lakes/lakes10k.img")
+```
+
+## Habitat data preparation
+
+1.  Calculate the the area of each GlobCover (v2.2) habitat category
+    (300m2) per pixel -- hereafter referred to as a "pixel" --
+    of `mask10k`.
+
+2.  Make pixel X habitat matrices used later to filter projected species
+    presences.
+
+```{r}
+## setting directories
+output.dir <- "data/Habitats/Habitat_pixel/GlobCover"
+dir.create(output.dir)
+
+## habitats
+habRasterFile <- "data/Habitats/GLOBCOVER.img"
+
+source("Dataprep/HABITATdata.R")
+
+objsToRm <- setdiff(ls(all.names = TRUE), 
+                    c("mask10k", "mask10kID", "lakes"))  ## keep these 
+rm(list = objsToRm)
+for (i in 1:3) gc(reset = TRUE)   ## free RAM
+```
+
+## Species data preparation
+
+1.  Make pixel X species matrices from projected species distributions
+    (`SPPdata.R`). Species distributions were projected under baseline
+    climate conditions (climate normals for 1960-1990) and future
+    climate conditions for 2050 (average for 2041-2060). Future climate
+    conditions were derived from IPCC CMIP5 ensemble projections using
+    the HadGEM2-AO global circulation model and the RCP 8.5 emissions
+    scenario (equivalent to CMIP6 SSP5-8.5 -- see above). All
+    projections available in [Zenodo](URL). Species were allowed to
+    follow their climate niche without restrictions.
+
+2.  Get the IUCN status of each tetrapod species (`sppIUCNstatus.R`).
+
+```{r}
+k <- 0         ## define habitat threshold to consider a spp present(% higher than K, so e.g. k = 0 higher than 0)
+opt <- FALSE   ## define if using only optimal habitats (=TRUE), or optimal and secondary (=FALSE)
+
+## file suffix to use throughout
+file.suff <- ifelse(opt, "_opthab_tresh", "_allhab_tresh")
+
+source("Dataprep/SPPdata.R")
+
+source("Dataprep/sppIUCNstatus.R")
+
+objsToRm <- setdiff(ls(all.names = TRUE), 
+                    c("mask10k", "mask10kID", "lakes"))  ## keep these 
+rm(list = objsToRm)
+for (i in 1:3) gc(reset = TRUE)   ## free RAM
+```
+
+## Parameter files for batch runs
+
+1.  Make `.txt` parameter lists so that networks can be run in batch
+    mode. In interactive mode the script will loop through each line.
+
+```{r}
+## output folder
+outputs.dir <- "Param_files/workflowDemo"
+dir.create(outputs.dir, recursive = TRUE)
+
+source("Dataprep/Make_param_files.R")
+
+objsToRm <- setdiff(ls(all.names = TRUE), 
+                    c("mask10k", "mask10kID", "lakes"))  ## keep these 
+rm(list = objsToRm)
+for (i in 1:3) gc(reset = TRUE)   ## free RAM
+```
+
+## Build first baseline networks
+
+1.    Downscale the metaweb - i.e. combine presence/absence + habitat + trophic
+      information to build a network in each pixel of `mask10k` - allowing
+      for species to be present as long as they have at least one prey item.
+      For each "local" network, a suite of network metrics are calculated.
+      Output files are: 
+      
+        -   `metrics10kWdietFUND*.rds`, which contains a large table of network 
+        metrics (columns) per pixel (lines). Pixel ID's are under the 
+        `PAGENAME` column.
+        
+        -   `spp10kWdietFUND*`, which contains a large list of adjency matrices
+        for each pixel. List `names()` refer to the pixel ID (column `PAGENAME`
+        in the `metrics` table).
+    
+2.    These networks are used to calculate the distribution of no. prey per species
+      across the full study area.
+  
+
+```{r}
+## GET PARAMETERS --------------------------------------
+## Baseline networks
+parameters <- read.table("Param_files/2021/params_BL.txt", sep = ";")$V1
+## subset to one  stat model
+parameters <- grep("current_wm_bin_RF", parameters, value = TRUE)
+
+## change these manually:
+useBLextthresh <- FALSE  ## use/calculate BL webs with extinction thresholds
+k <- 0                   ## define habitat threshold to consider a spp present(% higher than K, so e.g. k = 0 higher than 0)
+opt <- FALSE             ## define if using only optimal habitats (=TRUE), or optimal and secondary (=FALSE)
+
+source("NetworkProjections/Network_sims.R")
+
+objsToRm <- setdiff(ls(all.names = TRUE), 
+                    c("mask10k", "mask10kID", "lakes"))  ## keep these 
+rm(list = objsToRm)
+for (i in 1:3) gc(reset = TRUE)   ## free RAM
+```
+
+## Calculate species extinction thresholds
+
+1.  Use the networks above to calculate the distribution of no. prey
+    each species has across all networks of the study area. Then, for
+    each species, calculate extinction thresholds based on quantile
+    values of no. of prey.
+
+2.  Quantiles values calculated: 10%, 25%, 50%, 75% and 90%. Minimum and
+    median prey values are also calculated
+
+```{r}
+## setting directories
+results.dir <- "NetworkSims/Baseline_SDMpres_GlobCover/No_ext_thresh/"
+source("Dataprep/Ext_thresh_minquantmedian_noprey.R")
+
+objsToRm <- setdiff(ls(all.names = TRUE), 
+                    c("mask10k", "mask10kID", "lakes"))  ## keep these 
+rm(list = objsToRm)
+for (i in 1:3) gc(reset = TRUE)   ## free RAM
+```
+
+## Re-build baseline networks using species extinction thresholds
+
+1.  Re-builds all networks, but this time filter species presences
+    according to a minimum no. of prey defined by one of the quantile
+    values calculated above (i.e. the 'extinction thresholds').
+
+```{r}
+## Baseline networks
+parameters <- read.table("Param_files/2021/params_BL.txt", sep = ";")$V1
+## subset to one  stat model
+parameters <- grep("current_wm_bin_RF", parameters, value = TRUE)
+## change these manually:
+useBLextthresh = TRUE  ## use/calculate BL webs with extinction thresholds
+k = 0                  ## define habitat threshold to consider a spp present(% higher than K, so e.g. k = 0 higher than 0)
+opt <- FALSE           ## define if using only optimal habitats (=TRUE), or optimal and secondary (=FALSE)
+quants <- c("min", "median", "quant10", "quant25", "quant50", "quant75", "quant90")  ## choose quantiles or "all"
+
+source("NetworkProjections/Network_sims.R")
+
+objsToRm <- setdiff(ls(all.names = TRUE), 
+                    c("mask10k", "mask10kID", "lakes"))  ## keep these 
+rm(list = objsToRm)
+for (i in 1:3) gc(reset = TRUE)   ## free RAM
+```
+
+## Sensitivity analyses
+
+1.  Run a sensitivity analyses of baseline network metrics to extinction
+    thresholds.
+
+2.  This analysis will determine the extinction threshold is picked for
+    further network projections.
+
+```{r}
+## Set working directories --------------------------
+res.dir <- "NetworkSims/Baseline_SDMpres_GlobCover/"
+out.dir <- "NetworkSims/Baseline_SDMpres_GlobCover/Analyses/SensAnalysis"
+dir.create(out.dir, recursive = TRUE)
+
+source("Analyses/1_SensAnalysis_BL.R")
+
+objsToRm <- setdiff(ls(all.names = TRUE), 
+                    c("mask10k", "mask10kID", "lakes"))  ## keep these 
+rm(list = objsToRm)
+for (i in 1:3) gc(reset = TRUE)   ## free RAM
+```
+
+## Project networks under scenarios of change
+
+1.  Builds/projects networks according to a scenario of change.
+
+2.  Here, two extreme scenarios are considered to explore the lower
+    boundaries of network robustness to projected changes:
+
+    -   Climate change - A climate change scenario using the HadGEM2-AO
+        global circulation model and the RCP 8.5 emissions scenario
+        (equivalent to CMIP6 SSP5-8.5), which affected species
+        distributions (see above for details). Habitat (i.e. land cover)
+        composition was assumed to remain the same.
+
+    -   IUCN extinctions - A targetted extinctions scenario, where we
+        assumed a failure to project all species listed as Critically
+        Endangered, Endangered and Vulnerable in the IUCN Red List.
+        These species were removed from their entire range. Both habitat
+        and climate are assumed to remain the same, meaning that the
+        ranges of all other species are unchanged.
+
+3.  For projections across all pan-European countries, we picked a
+    quantile value of 10% was picked as the extinction threshold (see
+    [Supplemental Information](URL)). For simplictiy, we chose to keep
+    it for this demo.
+
+```{r}
+quants <- "quant10"
+do.pix <- "all"    ## "missing" or "all"
+noCPUs <- 10
+parallel <- TRUE
+
+## CC/extinction scenarios
+parameters <- read.table("Param_files/2021/params_Scen_FULL.txt", sep = ";")$V1
+## subset to one GCM and stat model
+parameters <- grep("hd_rcp85_wm_bin_RF|current_wm_bin_RF", parameters, value = TRUE)
+
+source("NetworkProjections/Network_sims.R")
+
+objsToRm <- setdiff(ls(all.names = TRUE), 
+                    c("mask10k", "mask10kID", "lakes"))  ## keep these 
+rm(list = objsToRm)
+for (i in 1:3) gc(reset = TRUE)   ## free RAM
+```
+
+## Analyses of results and visual outputs
+
+### Robustness and trophic level
+
+1.  Make/load the `masterdietFUND*` files to get the `master*` tables -- 
+    these are tables containing pixel X species presence/absence information 
+    according to projected network composition.
+
+2.  Calculate the initial trophic level (in baseline networks generated
+    under the same extinction threshold) occupied by species that went
+    primarily extinct and secondarily extinct in each scenario.
+
+    -   Primary extinctions = extinctions due to loss of climate
+        suitability or because species removed from its entire range
+        under the IUCN extinctions scenario.
+
+    -   Secondary extinctions = extinctions due to loss of prey only.
+        These species could otherwise be present, according to their
+        climate and habitat niche.
+
+```{r}
+## Set working directories --------------------------
+bl.dir <- "NetworkSims/Baseline_SDMpres_GlobCover"
+res.dir <- scen.dir <- "NetworkSims/IUCN_CC_sims_GlobCover"
+out.dir <- "NetworkSims/IUCN_CC_sims_GlobCover/Analyses"
+masks.dir <-  "Masks/10k"
+
+fig.dir <- file.path(out.dir, "Figs")
+dir.create(fig.dir, recursive = TRUE)
+
+## chose extinction threshold to analyse
+quant <- "quant10"
+
+## get some more functions
+source("Tools/Rob&TL_functions.R")
+
+## get master files (make if need be)
+## skips doing master files if they have been produced before
+## set to TRUE if something went wrong and they need to be recalculated
+redo <- FALSE  
+save <- TRUE            ## save tables to disk?
+returnMaster <- FALSE   ## return the tables (TRUE), or just save them to disk
+source("Dataprep/make_Master_Files.R")
+
+source("Analyses/2_Rob&TL.R")
+
+objsToRm <- setdiff(ls(all.names = TRUE), 
+                    c("mask10k", "mask10kID", "lakes"))  ## keep these 
+rm(list = objsToRm)
+for (i in 1:3) gc(reset = TRUE)   ## free RAM
+```
+
+
+### Maps
+```{r}
+## Set working directories --------------------------
+bl.dir <- "NetworkSims/Baseline_SDMpres_GlobCover"
+res.dir <- "NetworkSims/IUCN_CC_sims_GlobCover"
+out.dir <- "NetworkSims/IUCN_CC_sims_GlobCover/Analyses"
+masks.dir <-  "Masks/10k"
+
+fig.dir <- file.path(out.dir, "Figs")
+
+dir.create(fig.dir, recursive = TRUE)
+
+## chose extinction threshold to analyse
+quant <- "quant10"
+
+## LOADING RESULTS ----------------------------------
+redo <- FALSE ## redo the compilation of network metrics and purge cache?
+source("Dataprep/CompileRes_allMetrics.R")  
+
+source("Analyses/3_Maps.R")
+
+objsToRm <- setdiff(ls(all.names = TRUE), 
+                    c("mask10k", "mask10kID", "lakes"))  ## keep these 
+rm(list = objsToRm)
+for (i in 1:3) gc(reset = TRUE)   ## free RAM
+```
+
+## Publication figures
+
+```{r}
+fig.dir <- "NetworkSims/IUCN_CC_sims_GlobCover/Analyses/Figs/pubFigs/"
+source("Analyses/4_pubFigures.R")
+```
+
