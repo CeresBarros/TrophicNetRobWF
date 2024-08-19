@@ -7,16 +7,8 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r}
-## requires
-library(ToolsCB)
-library(exactextractr)
-library(raster)
-library(rredlist)
-library(data.table)
-library(reproducible)
-library(dplyr)
-
+```{r, include = FALSE}
+## package installation
 .libPaths("packages/")
 options(repos =  c("predictiveecology.r-universe.dev", getOption("repos")))
 
@@ -24,107 +16,41 @@ if (!"Require" %in% installed.packages())
   install.packages("Require", lib = "packages/")
 
 Require::Require(c(
-  "raster",
-  "foreign",
-  "ggplot2",
-  "ggExtra",
-  "ggpubr",
+  "cheddar",
+  "colorspace",
   "data.table",
-  "gamlss",
-  "gamlss.inf",
-  "lme4",
   "dplyr",
-  "sf",
+  "exactextractr",
+  "foreign",
   "future",
   "future.apply",
-  "caret",
-  "ade4",
-  "RSQLite",
+  "ggExtra",
+  "ggplot2",
+  "ggpubr",
+  "patchwork",
   "PredictiveEcology/reproducible@b4664aa7b9e51e9135a3b5f408ccde2de2d44a21",
-  "CeresBarros/ToolsCB"
+  "raster",
+  "rredlist",
+  "RSQLite",
+  "sf",
+  "CeresBarros/ToolsCB@master (HEAD)"
 ), 
 libPaths = file.path("packages/"))
 
-if (!"Require" %in% installed.packages())
-  install.packages("Require", lib = "packages/")
-
-Require::Require(c(
-  "ggplot2",
-  "ggExtra",
-  "ggpubr", 
-  "patchwork"
-),
-libPaths = file.path("packages/"))
-
+## install, but don't load
 Require::Require("qs", libPaths = file.path("packages/"), require = FALSE)
-
-
-options("future.globals.maxSize" = +Inf)
-options("reproducible.useNewDigestAlgorithm" = 2)
-options("reproducible.cachePath" = "cache/runs2021")
-
-
-## requires
-# .libPaths("/home/cbarros/Networks/R/4.0/")
-.libPaths("packages/")
-if (!"Require" %in% installed.packages())
-  install.packages("Require", lib = "packages/")
-
-Require::Require(c("PredictiveEcology/reproducible@b4664aa7b9e51e9135a3b5f408ccde2de2d44a21",
-                   "CeresBarros/ToolsCB",
-                   "factoextra"), 
-                 libPaths = file.path("packages/")
-                 # libPaths = "/home/cbarros/Networks/R/4.0/"
-                 )
-
-options(reproducible.useNewDigestAlgorithm = 2)
-options(reproducible.cachePath = "cache/runs2021")
-
-Require::Require(c("PredictiveEcology/reproducible@b4664aa7b9e51e9135a3b5f408ccde2de2d44a21",
-                   "CeresBarros/ToolsCB"), 
-                 libPaths = file.path("packages/"))
 
 memory.limit(size = 16000)
-options(nwarnings = 100000000, max.print = 100000000)
-options(reproducible.cachePath = "cache/")
-options(reproducible.useGDAL = FALSE)
-options(reproducible.useNewDigestAlgorithm = 2)
-options(future.globals.maxSize = 3e+9)
-
-
-
-options(repos =  c("predictiveecology.r-universe.dev", 
-                   "CRAN" = "https://cran.rstudio.com/"))
-.libPaths("packages/")
-
-if (!"Require" %in% installed.packages())
-  install.packages("Require", lib = "packages/")
-
-Require::Require(c(
-  "cheddar", 
-  "colorspace",
-  "data.table",
-  "future",
-  "future.apply",
-  "ggplot2",
-  "ggExtra",
-  "ggpubr",
-  "PredictiveEcology/reproducible@b4664aa7b9e51e9135a3b5f408ccde2de2d44a21",
-  "CeresBarros/ToolsCB@development (HEAD)"
-),
-libPaths = file.path("packages/"))
-
-Require::Require("qs", libPaths = file.path("packages/"), require = FALSE)
-
-options("future.globals.maxSize" = +Inf)
-options("reproducible.useNewDigestAlgorithm" = 2)
-options("reproducible.cachePath" = "cache/runs2021")
+options(future.globals.maxSize = 3e+9,
+        reproducible.useNewDigestAlgorithm = 2,
+        reproducible.cachePath = "cache/",
+        reproducible.useGDAL = FALSE
+        nwarnings = 100000000,
+        max.print = 100000000)
 
 source("Rscripts/Tools/compilePextSext.R")
 source("Rscripts/Tools/summStatsByPixSpp.R")
 source("Rscripts/Tools/plotFuns.R")
-
-
 ```
 
 ```{r}
