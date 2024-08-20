@@ -67,9 +67,23 @@ source("Tools/summStatsByPixSpp.R")
 source("Tools/plotFuns.R")
 ```
 
-```{r}
-## 10K grid dbf
-mask10kID <- foreign::read.dbf("Masks/10k/reference_grid_10km.img.vat.dbf") ## pixel IDs
+All data necessary to run this workflow is available in
+[Zenodo](https://zenodo.org/doi/10.5281/zenodo.13334864).
+
+## Study area
+
+In Dansereau et al. (in prep.) trophic networks were calculated across
+European countries, Turkey, Georgia and European Russia, under baseline
+conditions and scenarios of change.
+
+Here, we reduced computational burden by subsetting to a study area
+polygon drawn with random borders and placed in central Europe. The user
+is free to change this study area as they see fit.
+
+Note that all lakes are removed.
+
+```{r, fig.cap = "Full study area in blue, with (removed) lakes shown in grey. Subset study area in black."}
+## 10K grid dbf - pixel IDs 
 mask10kID <- prepInputs(url = "https://zenodo.org/api/records/13345395/files-archive",
                         archive = "13334865.zip",
                         targetFile = "reference_grid_10km.img.vat.dbf",
@@ -262,7 +276,7 @@ for (i in 1:3) gc(reset = TRUE)   ## free RAM
 ## Parameter files for batch runs
 
 1.  Make `.txt` parameter lists so that networks can be run in batch
-    mode. In interactive mode the script will loop through each line.
+mode. In interactive mode the script will loop through each line.
 
 ```{r}
 source("Dataprep/Make_param_files.R")
@@ -275,23 +289,34 @@ for (i in 1:3) gc(reset = TRUE)   ## free RAM
 
 ## Build first baseline networks
 
-1.    Downscale the metaweb - i.e. combine presence/absence + habitat + trophic
-      information to build a network in each pixel of `mask10k` - allowing
-      for species to be present as long as they have at least one prey item.
-      For each "local" network, a suite of network metrics are calculated.
-      Output files are: 
-      
-        -   `metrics10kWdietFUND*.rds`, which contains a large table of network 
-        metrics (columns) per pixel (lines). Pixel ID's are under the 
-        `PAGENAME` column.
-        
-        -   `spp10kWdietFUND*`, which contains a large list of adjency matrices
-        for each pixel. List `names()` refer to the pixel ID (column `PAGENAME`
-        in the `metrics` table).
-    
-2.    These networks are used to calculate the distribution of no. prey per species
-      across the full study area.
-  
+1.  Obtain pixel X habitat matrix derived from projected land-cover for
+baseline conditions (`HABITATdata.R`, sourced in `Network_sims.R`).
+Habitat modelling/projection steps are not part of this workflow
+they present a significant portion of the computational time needed
+(see footnote for details[^1]).
+
+2.  Obtain pixel X species matrices derived from projected species
+distributions (`SPPdata.R`, sourced in `Network_sims.R`). Species
+distribution modelling/projection steps are not part of this
+workflow as they present a significant portion of the computational
+time needed (see footnote for details[^2]).
+
+3.  Downscale the metaweb - i.e. combine presence/absence + habitat +
+trophic information to build a network in each pixel of `mask10k`.
+Species are consired present in the network as long as they have at
+least one prey item. For each "local" network, a suite of network
+metrics are calculated. Output files are:
+
+    -   `metrics10kWdietFUND*.rds`, which contains a large table of
+    network metrics (columns) per pixel (lines). Pixel ID's are
+    under the `PAGENAME` column.
+
+    -   `spp10kWdietFUND*`, which contains a large list of adjacency
+    matrices for each pixel. List `names()` refer to the pixel ID
+    (column `PAGENAME` in the `metrics` table).
+
+    -   These networks are used to calculate the distribution of no.
+    prey per species across the full study area.
 
 ```{r}
 ## GET PARAMETERS --------------------------------------
@@ -317,12 +342,12 @@ for (i in 1:3) gc(reset = TRUE)   ## free RAM
 ## Calculate species extinction thresholds
 
 1.  Use the networks above to calculate the distribution of no. prey
-    each species has across all networks of the study area. Then, for
-    each species, calculate extinction thresholds based on quantile
-    values of no. of prey.
+each species has across all networks of the study area. Then, for
+each species, calculate extinction thresholds based on quantile
+values of no. of prey.
 
 2.  Quantiles values calculated: 10%, 25%, 75% and 90%. Minimum and
-    median prey values are also calculated
+median prey values are also calculated
 
 ```{r}
 ## setting directories
@@ -339,8 +364,8 @@ for (i in 1:3) gc(reset = TRUE)   ## free RAM
 ## Re-build baseline networks using species extinction thresholds
 
 1.  Re-builds all networks, but this time filter species presences
-    according to a minimum no. of prey defined by one of the quantile
-    values calculated above (i.e. the 'extinction thresholds').
+according to a minimum no. of prey defined by one of the quantile
+values calculated above (i.e. the 'extinction thresholds').
 
 ```{r}
 ## Baseline networks
@@ -367,10 +392,10 @@ for (i in 1:3) gc(reset = TRUE)   ## free RAM
 ## Sensitivity analyses
 
 1.  Run a sensitivity analyses of baseline network metrics to extinction
-    thresholds.
+thresholds.
 
 2.  This analysis will determine the extinction threshold is picked for
-    further network projections.
+further network projections.
 
 ```{r}
 ## Set working directories --------------------------
@@ -391,25 +416,25 @@ for (i in 1:3) gc(reset = TRUE)   ## free RAM
 1.  Builds/projects networks according to a scenario of change.
 
 2.  Here, two extreme scenarios are considered to explore the lower
-    boundaries of network robustness to projected changes:
+boundaries of network robustness to projected changes:
 
-    -   Climate change - A climate change scenario using the HadGEM2-AO
-        global circulation model and the RCP 8.5 emissions scenario
-        (equivalent to CMIP6 SSP5-8.5), which affected species
-        distributions (see above for details). Habitat (i.e. land cover)
-        composition was assumed to remain the same.
+-   Climate change - A climate change scenario using the HadGEM2-AO
+global circulation model and the RCP 8.5 emissions scenario
+(equivalent to CMIP6 SSP5-8.5), which affected species
+distributions (see above for details). Habitat (i.e. land cover)
+composition was assumed to remain the same.
 
-    -   IUCN extinctions - A targetted extinctions scenario, where we
-        assumed a failure to project all species listed as Critically
-        Endangered, Endangered and Vulnerable in the IUCN Red List.
-        These species were removed from their entire range. Both habitat
-        and climate are assumed to remain the same, meaning that the
-        ranges of all other species are unchanged.
+-   IUCN extinctions - A targeted extinctions scenario, where we
+assumed a failure to project all species listed as Critically
+Endangered, Endangered and Vulnerable in the IUCN Red List.
+These species were removed from their entire range. Both habitat
+and climate are assumed to remain the same, meaning that the
+ranges of all other species are unchanged.
 
 3.  For projections across all pan-European countries, we picked a
-    quantile value of 10% was picked as the extinction threshold (see
-    [Supplemental Information](URL)). For simplictiy, we chose to keep
-    it for this demo.
+quantile value of 10% was picked as the extinction threshold (see
+[Supplemental Information](URL)). For simplicity, we chose to keep
+it for this demonstration workflow.
 
 ```{r}
 ## CC/extinction scenarios
@@ -437,21 +462,21 @@ for (i in 1:3) gc(reset = TRUE)   ## free RAM
 
 ### Robustness and trophic level
 
-1.  Make/load the `masterdietFUND*` files to get the `master*` tables -- 
-    these are tables containing pixel X species presence/absence information 
-    according to projected network composition.
+1.  Make/load the `masterdietFUND*` files to get the `master*` tables --
+these are tables containing pixel X species presence/absence
+information according to projected network composition.
 
 2.  Calculate the initial trophic level (in baseline networks generated
-    under the same extinction threshold) occupied by species that went
-    primarily extinct and secondarily extinct in each scenario.
+under the same extinction threshold) occupied by species that went
+primarily extinct and secondarily extinct in each scenario.
 
-    -   Primary extinctions = extinctions due to loss of climate
-        suitability or because species removed from its entire range
-        under the IUCN extinctions scenario.
+-   Primary extinctions = extinctions due to loss of climate
+suitability or because species removed from its entire range
+under the IUCN extinctions scenario.
 
-    -   Secondary extinctions = extinctions due to loss of prey only.
-        These species could otherwise be present, according to their
-        climate and habitat niche.
+-   Secondary extinctions = extinctions due to loss of prey only.
+These species could otherwise be present, according to their
+climate and habitat niche.
 
 ```{r}
 ## Set working directories --------------------------
@@ -484,8 +509,8 @@ rm(list = objsToRm)
 for (i in 1:3) gc(reset = TRUE)   ## free RAM
 ```
 
-
 ### Maps
+
 ```{r}
 ## Set working directories --------------------------
 bl.dir <- "NetworkSims/Baseline_SDMpres_GlobCover"
@@ -517,3 +542,13 @@ fig.dir <- "NetworkSims/IUCN_CC_sims_GlobCover/Analyses/Figs/pubFigs/"
 source("Analyses/4_pubFigures.R")
 ```
 
+[^1]: Land-cover/habitat projections were obtained from GLOBIO v3.5 runs
+based on land-cover data for 2000.
+
+[^2]: Species distributions were projected under baseline climate
+conditions (climate normals for 1960-1990) and future climate
+conditions for 2050 (average for 2041-2060). Future climate
+conditions were derived from IPCC CMIP5 ensemble projections using
+the HadGEM2-AO global circulation model and the RCP 8.5 emissions
+scenario (equivalent to CMIP6 SSP5-8.5 -- see above). Species were
+allowed to follow their climate niche without restrictions.
