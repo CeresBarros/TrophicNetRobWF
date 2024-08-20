@@ -55,7 +55,6 @@ Require::Require(c(
   "terra"
 ), libPaths = file.path("packages/"), require = FALSE)
 
-memory.limit(size = 16000)
 options(future.globals.maxSize = 3e+9,
         reproducible.useNewDigestAlgorithm = 2,
         reproducible.cachePath = "cache/",
