@@ -97,16 +97,44 @@ lakes <- prepInputs(url = "https://zenodo.org/api/records/13345395/files-archive
                     targetFile = "lakes10k.img",
                     destinationPath = "data/",
                     fun = "raster::raster")
+
+plot(mask10k, col = "cadetblue", legend = FALSE)
+plot(lakes, add = TRUE, col = "darkgrey", legend = FALSE)
+
+## OPTIONAL
+doSubsetting  <- TRUE ## set to FALSE if wanting to run computations for full workflow
+
+if (doSubsetting) {
+  ## crop to a smaller study area around the center point of the full study area.
+  pixInEU <- cellFromRowCol(mask10k, nrow(mask10k)/3*2, ncol(mask10k)/2)
+  pixInEU <- terra::vect(xyFromCell(mask10k, pixInEU), crs = raster::crs(mask10k, asText = TRUE))
+  subsetArea <- SpaDES.tools::randomStudyArea(pixInEU, size = 1e+10, seed = 123) |>   ## 100 x 100Km area
+    as(Class = "Spatial")
+  
+  mask10k <- crop(mask10k, subsetArea) |>
+    mask(mask = subsetArea)
+  
+  mask10kSHP <- crop(mask10kSHP, subsetArea)
+  
+  mask10kID <- mask10kID[mask10kID$Value %in% na.omit(getValues(mask10k)),]
+  
+  lakes <- crop(mask10k, subsetArea) |>
+    mask(mask = subsetArea)
+}
+
+plot(subsetArea, add = TRUE, col = "black", legend = FALSE,
+     main = "Full (blue) and subset (black) study areas.")
+
 ```
 
 ## Habitat data preparation
 
 1.  Calculate the the area of each GlobCover (v2.2) habitat category
-    (300m2) per pixel -- hereafter referred to as a "pixel" --
-    of `mask10k`.
+(300m2) per pixel -- hereafter referred to as a "pixel" -- of
+`mask10k`.
 
 2.  Make pixel X habitat matrices used later to filter projected species
-    presences.
+presences.
 
 ```{r}
 source("Dataprep/HABITATdata.R")
