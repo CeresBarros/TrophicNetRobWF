@@ -104,29 +104,12 @@ rm(list = objsToRm)
 for (i in 1:3) gc(reset = TRUE)   ## free RAM
 ```
 
-## Species data preparation
 
-1.  Make pixel X species matrices from projected species distributions
-    (`SPPdata.R`). Species distributions were projected under baseline
-    climate conditions (climate normals for 1960-1990) and future
-    climate conditions for 2050 (average for 2041-2060). Future climate
-    conditions were derived from IPCC CMIP5 ensemble projections using
-    the HadGEM2-AO global circulation model and the RCP 8.5 emissions
-    scenario (equivalent to CMIP6 SSP5-8.5 -- see above). All
-    projections available in [Zenodo](URL). Species were allowed to
-    follow their climate niche without restrictions.
+## Species data preparation - IUCN statuses
 
-2.  Get the IUCN status of each tetrapod species (`sppIUCNstatus.R`).
+1.  Get the IUCN status of each tetrapod species (`sppIUCNstatus.R`).
 
 ```{r}
-k <- 0         ## define habitat threshold to consider a spp present(% higher than K, so e.g. k = 0 higher than 0)
-opt <- FALSE   ## define if using only optimal habitats (=TRUE), or optimal and secondary (=FALSE)
-
-## file suffix to use throughout
-file.suff <- ifelse(opt, "_opthab_tresh", "_allhab_tresh")
-
-source("Dataprep/SPPdata.R")
-
 source("Dataprep/sppIUCNstatus.R")
 
 objsToRm <- setdiff(ls(all.names = TRUE), 
