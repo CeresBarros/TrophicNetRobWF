@@ -504,6 +504,16 @@ save <- TRUE            ## save tables to disk?
 returnMaster <- FALSE   ## return the tables (TRUE), or just save them to disk
 source("Dataprep/make_Master_Files.R")
 
+## compile all metrics but don't return
+doCache <- if (redo) "overwrite" else TRUE
+invisible(reproducible::Cache(loadResultsMetrics,
+                    bl.dir = bl.dir,
+                    res.dir = res.dir,
+                    out.dir = out.dir,
+                    quant = quant,
+                    useCache = doCache,
+                    userTags = "loadAllmetrics"))
+
 source("Analyses/2_Rob&TL.R")
 
 objsToRm <- setdiff(ls(all.names = TRUE), 
