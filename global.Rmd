@@ -17,7 +17,7 @@ options(repos = "https://cran.rstudio.com/")
 ```
 
 
-```{r, include = FALSE}
+```{r, cache = FALSE, include = FALSE}
 ## package installation
 .libPaths("packages/")
 options(repos = c("predictiveecology.r-universe.dev", getOption("repos")))
