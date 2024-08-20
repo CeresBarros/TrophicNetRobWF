@@ -8,6 +8,14 @@ editor_options:
 ---
 
 ```{r, include = FALSE}
+knitr::opts_chunk$set(cache = 2,
+                      warning = FALSE,
+                      message = FALSE,
+                      tidy = TRUE)
+```
+
+
+```{r, include = FALSE}
 ## package installation
 .libPaths("packages/")
 options(repos =  c("predictiveecology.r-universe.dev", getOption("repos")))
