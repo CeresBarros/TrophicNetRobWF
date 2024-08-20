@@ -9,13 +9,8 @@
 ## source script for labels
 source("Analyses/labsAndCols.R")
 
-## (Baseline) trophic level of extinct species following extreme IUCN removal scenario
-# Considering the "extreme" targeted extinctions scenario -- i.e.
-# removal of all CR, EN, VU species from the metaweb.
-scenstr <- "CR_EN_VU"
-
-## get spp P/A under future climate (no network filtering)
-sppPA.fut.file <- list.files("data", pattern = paste0("pixXspp.*", scenstr), full.names = TRUE)
+## get spp P/A under future climate (no network filtering) -- not used by compilePextSext if only doing IUCN
+sppPA.fut.file <- list.files("data", pattern = paste0("pixXspp.*", "hd_rcp85_wm_bin_RF"), full.names = TRUE)
 
 ## compile tables of Pext and Sext spps IDs
 names(masterScen.files) <- NULL  ## use the actual file names to name the outFiles list
@@ -26,12 +21,15 @@ outFiles <- Map(masterScen.file = masterScen.files,
                   sppPA.fut.file = sppPA.fut.file
                 ))
 
+## (Baseline) trophic level of extinct species following IUCN extinctions scenario
+scenstr <- "CR_EN_VU"
+
 PextFile <- outFiles[[grep(scenstr, basename(names(outFiles)))]] |>
   grep("Pext", x = _, value = TRUE)
 SextFile <- outFiles[[grep(scenstr, basename(names(outFiles)))]] |>
   grep("Sext", x = _, value = TRUE)
 
-
+## calculate trophic levels
 outLs <- tlcalcFun(scenstr, PextFile, SextFile)
 tlDT <- outLs$tlDT
 masterPext <- outLs$masterPext
@@ -42,11 +40,10 @@ for (i in 1:3) gc(reset = TRUE)
 
 tlDT <- filterTL(tlDT = tlDT, masterPext = masterPext, masterSext = masterSext)
 
-
 ###  Trophic level distributions by type of extinction
-tl.model <- glm(TL ~ Ext, data = tlDT, family = "Gamma")
-summary(tl.model)
-anova(tl.model)
+# tl.model <- glm(TL ~ Ext, data = tlDT, family = "Gamma")
+# summary(tl.model)
+# anova(tl.model)
 
 # opts <- par(mfrow = c(2,2))
 # plot(tl.model)  ## good enough
@@ -70,18 +67,6 @@ eval(parse(text = paste0(
 ## (Baseline) trophic level of extinct species following CC scenario
 scenstr <- "hd_rcp85_wm_bin_RF"
 
-## get spp P/A under future climate (no network filtering)
-sppPA.fut.file <- list.files("data", pattern = paste0("pixXspp.*", scenstr), full.names = TRUE)
-
-## compile tables of Pext and Sext spps IDs
-names(masterScen.files) <- NULL  ## use the actual file names to name the outFiles list
-outFiles <- Map(masterScen.file = masterScen.files,
-                f = compilePextSext,
-                MoreArgs = list(
-                  masterBL.file = masterBL.files,
-                  sppPA.fut.file = sppPA.fut.file
-                ))
-
 PextFile <- outFiles[[grep(scenstr, basename(names(outFiles)))]] |>
   grep("Pext", x = _, value = TRUE)
 SextFile <- outFiles[[grep(scenstr, basename(names(outFiles)))]] |>
@@ -99,9 +84,9 @@ for (i in 1:3) gc(reset = TRUE)
 tlDT <- filterTL(tlDT = tlDT, masterPext = masterPext, masterSext = masterSext)
 
 ###  Trophic level distributions by type of extinction
-tl.model <- glm(TL ~ Ext, data = tlDT, family = "Gamma")
-summary(tl.model)
-anova(tl.model)
+# tl.model <- glm(TL ~ Ext, data = tlDT, family = "Gamma")
+# summary(tl.model)
+# anova(tl.model)
 
 # opts <- par(mfrow = c(2,2))
 # plot(tl.model)  ## good enough

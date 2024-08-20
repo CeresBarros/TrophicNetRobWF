@@ -29,6 +29,7 @@ speciesListIUCN <- prepInputs(targetFile = "European_Red_List_2017_December.csv"
                               archive = "European_Red_List_2017_December_csv.zip",
                               destinationPath = "data/",
                               url = URL,
+                              overwrite = TRUE,
                               fun = "read.csv")
 speciesListIUCN <- as.data.table(speciesListIUCN)
 if (any(grepl("?..", names(speciesListIUCN), fixed = TRUE)))
@@ -46,6 +47,7 @@ URL <- "https://www.eea.europa.eu/data-and-maps/data/european-red-lists-7/tables
 IUCNdefinitions <- prepInputs(targetFile = "European_Red_List_2017_December_TableDefinitions.csv",
                               destinationPath = "data/",
                               url = URL,
+                              overwrite = TRUE,
                               fun = "read.csv")
 IUCNdefinitions <- as.data.table(IUCNdefinitions)
 if (any(grepl("?..", names(IUCNdefinitions), fixed = TRUE)))
