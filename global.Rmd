@@ -140,6 +140,105 @@ presences.
 source("Dataprep/HABITATdata.R")
 ```
 
+```{r, echo = FALSE, fig.cap = "GlobCover land-cover classes with largest areas per 10 Km pixel in study area."}
+## make a maps of dominant habitat per 10Km
+domLC <- melt(orig.pixhabs, id.vars = "PAGENAME")
+domLC <- domLC[, variable[which.max(value)], by = PAGENAME]
+mask10kIDDT <- as.data.table(mask10kID)
+domLC <- domLC[mask10kIDDT[, .(PageName, Value)], on = "PAGENAME==PageName"]  ## add numeric cell IDs
+
+domLC[, V1 := as.integer(sub("X", "", V1))]
+
+habsRaster <- raster(mask10k)
+habsRaster[mask10k[] %in% domLC$Value] <- domLC$V1
+
+# Create the data.table
+cols <- data.table(
+  Class = c(40, 41, 50, 60, 70, 90, 91, 92, 100, 101, 110, 130, 131, 
+            132, 133, 134, 136, 120, 140, 141, 144, 150, 151, 152, 200, 
+            201, 202, 203, 180, 185, 11, 13, 14, 15, 16, 20, 21, 30, 32, 210, 220, 190),
+  Description = c(
+    "Closed to open (>15%) broad-leaved\nevergreen or semi-deciduous forest (> 5m)",
+    "Closed (>40%) broad-leaved evergreen\nand/or semi-deciduous forest",
+    "Closed (>40%) broad-leaved deciduous\nforest (>5m)",
+    "Open (15-40%) broad-leaved deciduous\nforest/woodland (>5m)",
+    "Closed (>40%) needle-leaved evergreen\nforest (>5m)",
+    "Open (15-40%) needle-leaved deciduous\nor evergreen forest (>5m)",
+    "Open (15-40%) needle-leaved deciduous\nforest (>5m)",
+    "Open (15-40%) needle-leaved evergreen\nforest (>5m)",
+    "Closed to open (>15%) mixed broad-leaved\nand needle-leaved forest",
+    "Closed (>40%) mixed broad-leaved and\nneedle-leaved forest",
+    "Mosaic forest or shrubland (50-70%)\nand grassland (20-50%)",
+    "Closed to open (>15%) (broad-leaved or\nneedle-leaved)",
+    "Closed to open (>15%) broad-leaved or\nneedle-leaved evergreen shrubland (<5m)",
+    "Closed to open (>15%) broad-leaved\nevergreen shrubland (<5m)",
+    "Closed to open (>15%) needle-leaved\nevergreen shrubland (<5m)",
+    "Closed to open (>15%) broad-leaved\ndeciduous shrubland (<5m)",
+    "Open (15-40%) broad-leaved deciduous\nshrubland (<5m)",
+    "Mosaic grassland (50-70%) and forest\nor shrubland (20-50%)",
+    "Closed to open (>15%) herbaceous vgt\n(grassland)",
+    "Closed (>40%) grassland",
+    "Open (15-40%) grassland with sparse\n(<15%) trees or shrubs",
+    "Sparse (<15%) vegetation",
+    "Sparse (<15%) grassland",
+    "Sparse (<15%) shrubland",
+    "Bare areas",
+    "Consolidated bare areas (hardpans)",
+    "Non-consolidated bare areas (sandy desert)",
+    "Salt hardpans",
+    "Closed to open (>15%) grassland or woody\nvegetation on regularly flooded or waterlogged soil",
+    "Closed to open (>15%) grassland on regularly\nflooded or waterlogged soil",
+    "Post-flooding or irrigated croplands\n(or aquatic)",
+    "Post-flooding or irrigated herbaceous crops",
+    "Rainfed croplands",
+    "Rainfed herbaceous crops",
+    "Rainfed shrub or tree crops (cashcrops)",
+    "Mosaic cropland (50-70%) / vegetation\n(grassland/shrubland/forest) (20-50%)",
+    "Mosaic cropland (50-70%) / grassland or\nshrubland (20-50%)",
+    "Mosaic vegetation (grassland/shrubland/forest)\n(50-70%) / cropland (20-50%)",
+    "Mosaic forest (50-70%) / cropland (20-50%)",
+    "Water bodies",
+    "Permanent snow and ice",
+    "Artificial surfaces and associated\nareas (Urban areas >50%)"
+  ),
+  colour = c(rep("#7FFF00", 4),
+             rep("#006400", 4),
+             rep("#A6D854", 3),
+             rep("#556B2F", 6),
+             rep("#E5C494", 4),
+             rep("#FFD92F", 3), 
+             rep("#FC8D62", 4),
+             rep("#66CDAA", 2),
+             rep("#E78AC3", 2),
+             rep("#E78AC3", 3),
+             rep("#E78AC3", 4),
+             "#8DA0CB",
+             "#8DA0CB",
+             "grey30"
+  )
+)
+
+## make vectors
+colsVect = cols$colour
+names(colsVect) = cols$Class
+labsVect = cols$Description
+names(labsVect) = cols$Class
+
+## plot
+gplot(habsRaster, maxpixels = ncell(habsRaster)) +
+  geom_raster(aes(fill = factor(value))) +
+  scale_fill_manual(values = colsVect, 
+                    labels = labsVect, 
+                    na.translate = FALSE,
+                    name = "") +
+  coord_equal() +
+  theme_classic() + 
+  theme(legend.text = element_text(size = 11, vjust = 0.6),
+        legend.key.height = unit(0.8, "cm"),
+        legend.key.spacing.y = unit(0.2, "cm")) +
+  labs(x = "Longitude", y = "Latitude",
+       title = "Habitats in study area.")
+
 objsToRm <- setdiff(ls(all.names = TRUE), 
                     c("mask10k", "mask10kID", "mask10kSHP", "lakes"))  ## keep these 
 rm(list = objsToRm)
