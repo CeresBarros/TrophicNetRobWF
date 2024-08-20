@@ -43,8 +43,16 @@ po/*~
 # RStudio Connect folder
 rsconnect/
 
-# data
+# data & cache
 data/
+dataGOOD/
+cache/
+
+# results
+Habitats/
+Spp_traits_habs/
+Param_files/
+NetworkSims/
 
 # packages
 packages/
