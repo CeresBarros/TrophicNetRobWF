@@ -179,7 +179,7 @@ for (i in 1:3) gc(reset = TRUE)   ## free RAM
     each species, calculate extinction thresholds based on quantile
     values of no. of prey.
 
-2.  Quantiles values calculated: 10%, 25%, 50%, 75% and 90%. Minimum and
+2.  Quantiles values calculated: 10%, 25%, 75% and 90%. Minimum and
     median prey values are also calculated
 
 ```{r}

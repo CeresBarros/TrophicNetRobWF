@@ -2,7 +2,7 @@
 ## NETWORK ROBUSTNESS TO CC AND LUC
 ## 10KM
 ## SUPPORTING SCRIPTS - For workflow demo
-## 
+##
 ## Load habitat data
 ## Ceres Aug 2024
 ## --------------------------------------------------
@@ -34,7 +34,7 @@ BARM.habs <- as.matrix(BARM.habs[, which(colnames(BARM.habs) != "SPPname")])    
 ## checks
 if (!compareRaster(lakes, mask10k, stopiffalse = FALSE)) {
   lakes <- Cache(postProcess,
-                 x = lakes, 
+                 x = lakes,
                  rasterToMatch = mask10kSHP)
 }
 
@@ -53,8 +53,8 @@ if (length(notInSpp)) {
 ## project polygons for no info loss
 if (!compareCRS(mask10kSHP, habRaster)) {
   mask10kSHP <- Cache(spTransform,
-                   x = mask10kSHP, 
-                   CRSobj = crs(habRaster))
+                      x = mask10kSHP,
+                      CRSobj = crs(habRaster))
 }
 
 ## crop for faster extraction
@@ -63,8 +63,8 @@ habRaster <- crop(habRaster, extent(mask10kSHP))
 ## extract
 mask10kSHP <- st_as_sf(mask10kSHP)
 orig.pixhabs2List <- Cache(exact_extract,
-                      x = habRaster, 
-                      y = mask10kSHP)
+                           x = habRaster,
+                           y = mask10kSHP)
 names(orig.pixhabs2List) <- mask10kSHP$PageName
 
 ## sum the fractions per habitat type
@@ -84,8 +84,8 @@ cols <- grep("PAGENAME", names(orig.pixhabs), invert = TRUE)
 orig.pixhabs[PAGENAME %in% lakePAGENAMES, (cols) := NA]
 
 ## extend table
-orig.pixhabs <- dcast.data.table(orig.pixhabs, formula = PAGENAME ~ value, fun.aggregate = sum, 
-                             value.var = "coverage_fraction")
+orig.pixhabs <- dcast.data.table(orig.pixhabs, formula = PAGENAME ~ value, fun.aggregate = sum,
+                                 value.var = "coverage_fraction")
 orig.pixhabs[, "NA" := NULL]
 
 cols <- c("PAGENAME", setdiff(names(orig.pixhabs), "PAGENAME"))
@@ -99,7 +99,8 @@ cols <- setdiff(names(orig.pixhabs), paste0("X", notInSpp))
 orig.pixhabs <- orig.pixhabs[, ..cols]
 
 ## save
-write.table(orig.pixhabs, file = file.path(output.dir, "tabulateGLC_10Km_GC_FILTRD_NOLAKES.txt"))
+fileHAB <- file.path(output.dir, "tabulateGLC_10Km_GC_FILTRD_NOLAKES.txt")
+write.table(orig.pixhabs, file = fileHAB)
 
 ## --------------------------------------------------
 ## HABITATS -----------------------------------------
