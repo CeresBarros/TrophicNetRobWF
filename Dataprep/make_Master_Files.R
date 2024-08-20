@@ -1,6 +1,6 @@
 ## MAKING MASTER FILES ------------------------------
 
-## these are files that contain species P/A data compiled from 
+## these are files that contain species P/A data compiled from
 ## the output local networks (baseline or scenario)
 
 if (exists("redo")) {
@@ -37,15 +37,13 @@ if (!requireNamespace("future.apply")) {
   stop("Install 'future.apply' package")
 }
 
-  
-  
 if (length(file.ls) > 1) {
   future::plan(future::multisession, gc = TRUE, workers = 2)
-  masterBL.files <- future.apply::future_sapply(file.ls, makeAndSaveMasterBL, 
-                                  redo = redo, returnMaster = returnMaster, save = save)
+  masterBL.files <- future.apply::future_sapply(file.ls, makeAndSaveMasterBL,
+                                                redo = redo, returnMaster = returnMaster, save = save)
   future:::ClusterRegistry("stop")
 } else {
-  masterBL.files <- sapply(file.ls, makeAndSaveMasterBL, 
+  masterBL.files <- sapply(file.ls, makeAndSaveMasterBL,
                            redo = redo, returnMaster = returnMaster, save = save)
 }
 
@@ -57,6 +55,6 @@ file.ls <- do.call(c, lapply(list.files(scen.dir, full.names = TRUE), function(x
 }))
 
 future::plan(future::multisession, gc = TRUE, workers = 2)
-masterScen.files <- future.apply::future_sapply(file.ls, makeAndSaveMasterScen, 
-                                  redo = redo, returnMaster = returnMaster, save = save)
+masterScen.files <- future.apply::future_sapply(file.ls, makeAndSaveMasterScen,
+                                                redo = redo, returnMaster = returnMaster, save = save)
 future:::ClusterRegistry("stop")

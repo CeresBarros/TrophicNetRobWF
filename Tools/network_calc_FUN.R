@@ -631,5 +631,3 @@ parallelize.networkCalc <- function(outputs.dir, scen, temp.folder, do.pix = "al
 
   cat(paste0("*done!\n", date(), "\n***************\n"))
 }
-
-
