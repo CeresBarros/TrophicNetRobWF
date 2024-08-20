@@ -61,10 +61,6 @@ options(future.globals.maxSize = 3e+9,
         reproducible.rasterRead = "raster::raster",
         nwarnings = 100000000,
         max.print = 100000000)
-
-source("Tools/compilePextSext.R")
-source("Tools/summStatsByPixSpp.R")
-source("Tools/plotFuns.R")
 ```
 
 All data necessary to run this workflow is available in
@@ -492,6 +488,10 @@ quant <- "quant10"
 
 ## get some more functions
 source("Tools/Rob&TL_functions.R")
+source("Tools/compilePextSext.R")
+source("Tools/summStatsByPixSpp.R")
+source("Tools/plotFuns.R")
+
 
 ## get master files (make if need be)
 ## skips doing master files if they have been produced before
