@@ -16,7 +16,13 @@ if (exists("returnMaster")) {
 }
 
 ## diet categories
-load("Spp_traits_habs/BARMdiet_binFUNDLINKS_50_nocann.RData")
+BARMdiet.binary_nocann <- prepInputs(url = "https://zenodo.org/api/records/13345395/files-archive",
+                                     archive = "13334865.zip",
+                                     targetFile = "BARMdiet_binFUNDLINKS_50_nocann.RData",
+                                     destinationPath = "data/",
+                                     fun = "load")
+BARMdiet.binary_nocann <- BARMdiet.binary_nocann$BARMdiet.binary_nocann
+
 dietcat <- rownames(BARMdiet.binary_nocann)[1:11]
 rm(BARMdiet.binary_nocann); for (i in 1:10) gc()
 

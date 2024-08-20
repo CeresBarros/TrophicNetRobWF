@@ -12,12 +12,21 @@
 
 ## LOAD DATA -------------------------------------------
 ## habitats raster
-habRaster <- raster(habRasterFile)
+## habitats
+habRaster <- prepInputs(url = "https://zenodo.org/api/records/13345395/files-archive",
+                        archive = "13345395.zip",
+                        targetFile = "GLOBCOVER.img",
+                        destinationPath = "data/",
+                        fun = "raster::raster")
 
 ## spp x habitat table - with GlobCover classes
-## TODO: put data in Zenodo and download from there
-BARM.habs <- read.csv("Spp_traits_habs/Habitats/BARM_allhabs.csv", header = TRUE, row.names = "ID")
-BARM.habs <- as.matrix(BARM.habs[, which(colnames(BARM.habs) != "SPPname")])       ## remove spp names column (spp codes are row.names) 
+BARM.habs <- prepInputs(url = "https://zenodo.org/api/records/13345395/files-archive",
+                        archive = "13345395.zip",
+                        targetFile = "BARM_allhabs.csv",
+                        destinationPath = "data/",
+                        fun = read.csv(targetFile, header = TRUE, row.names = "ID"))
+
+BARM.habs <- as.matrix(BARM.habs[, which(colnames(BARM.habs) != "SPPname")])       ## remove spp names column (spp codes are row.names)
 
 ## checks
 if (!compareRaster(lakes, mask10k, stopiffalse = FALSE)) {

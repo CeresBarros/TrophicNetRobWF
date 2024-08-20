@@ -56,16 +56,33 @@ source("Rscripts/Tools/plotFuns.R")
 ```{r}
 ## 10K grid dbf
 mask10kID <- foreign::read.dbf("Masks/10k/reference_grid_10km.img.vat.dbf") ## pixel IDs
-## 10K grid poly
-mask10kSHP <- shapefile("Masks/10k/Shapefiles/grid_10km/grid_10Km.shp")
-## 10K grid raster in final projection
-mask10k <- raster("Masks/10k/reference_grid_10km.img")
+mask10kID <- prepInputs(url = "https://zenodo.org/api/records/13345395/files-archive",
+                        archive = "13334865.zip",
+                        targetFile = "reference_grid_10km.img.vat.dbf",
+                        destinationPath = "data/",
+                        fun = "foreign::read.dbf")
 
+## 10K grid poly
+mask10kSHP <- prepInputs(url = "https://zenodo.org/api/records/13345395/files-archive",
+                         archive = "13334865.zip",
+                         targetFile = "grid_10Km.shp",
+                         destinationPath = "data/")
+mask10kSHP <- as_Spatial(mask10kSHP)
+
+## 10K grid raster in final projection
+mask10k <- prepInputs(url = "https://zenodo.org/api/records/13345395/files-archive",
+                      archive = "13334865.zip",
+                      targetFile = "reference_grid_10km.img",
+                      destinationPath = "data/",
+                      fun = "raster::raster")
 mask10k[] <- mask10k[]  ## bring raster to memory
 
 ## lakes raster
-## TODO: put data in Zenodo and download from there
-lakes <- raster("data/Habitats/wise_large_lakes/lakes10k.img")
+lakes <- prepInputs(url = "https://zenodo.org/api/records/13345395/files-archive",
+                    archive = "13334865.zip",
+                    targetFile = "lakes10k.img",
+                    destinationPath = "data/",
+                    fun = "raster::raster")
 ```
 
 ## Habitat data preparation

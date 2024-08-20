@@ -12,7 +12,11 @@
 ## --------------------------------------------------
 ## OUR SPECIES LIST
 ## use spp x habitat table
-sppIDs <- read.csv("BARM_sppcodes.csv", header = TRUE, stringsAsFactors = FALSE)
+sppIDs <-  prepInputs(url = "https://zenodo.org/api/records/13345395/files-archive",
+                      archive = "13345395.zip",
+                      targetFile = "BARM_sppcodes.csv",
+                      destinationPath = "data/",
+                      fun = read.csv(targetFile, header = TRUE, stringsAsFactors = FALSE))
 sppIDs <- as.data.table(sppIDs)
 
 ## --------------------------------------------------
