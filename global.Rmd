@@ -118,7 +118,9 @@ if (doSubsetting) {
   ## crop to a smaller study area around the center point of the full study area.
   pixInEU <- cellFromRowCol(mask10k, nrow(mask10k)/3*2, ncol(mask10k)/2)
   pixInEU <- terra::vect(xyFromCell(mask10k, pixInEU), crs = raster::crs(mask10k, asText = TRUE))
-  subsetArea <- SpaDES.tools::randomStudyArea(pixInEU, size = 1e+10, seed = 123) |>   ## 100 x 100Km area
+  
+  ## 100 x 100Km area
+  subsetArea <- SpaDES.tools::randomStudyArea(pixInEU, size = 1e+10, seed = 123) |>   
     as(Class = "Spatial")
   
   mask10k <- crop(mask10k, subsetArea) |>
