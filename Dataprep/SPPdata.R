@@ -45,23 +45,32 @@ if (length(list.files("NetworkSims/Baseline_SDMpres_GlobCover/No_ext_thresh/", p
 
 ## Get current presences/absences - always necessary
 if (grepl("GAM", params[["CC"]])) {
-  fileBL <- "Spp_distributions/10K/pixXspp_matrices/fromSDMs/IPCC5_RF_GAM/pixXspp_10k_current_wm_bin_GAM_allhab_tresh0.Rdata"
+  fileBL <- "pixXspp_10k_current_wm_bin_GAM_allhab_tresh0.Rdata"
 } else if (grepl("RF", params[["CC"]])) {
-  fileBL <- "Spp_distributions/10K/pixXspp_matrices/fromSDMs/IPCC5_RF_GAM/pixXspp_10k_current_wm_bin_RF_allhab_tresh0.Rdata"
+  fileBL <- "pixXspp_10k_current_wm_bin_RF_allhab_tresh0.Rdata"
 }
 
-load(fileBL)
+master.SDMpres <- prepInputs(url = "https://zenodo.org/api/records/13345395/files-archive",
+                              archive = "13345395.zip",
+                              targetFile = fileBL,
+                              destinationPath = "data/",
+                              fun = "load")
+master.SDMpres <- master.SDMpres$master.SDMpres
+
 cat(paste("\nUsing", basename(fileBL), "as current spp P/A file"))
 
-## remove pixels that are not predicted 
+## remove pixels that are not predicted
 master.SDMpres <- master.SDMpres[as.character(master.SDMpres$PAGENAME) %in% as.character(orig.pixhabs$PAGENAME),]
 
 ## Get presences absences necessary for the scenario (coming from parameter file)
 if (doCC) {
-  fileCC <- list.files("Spp_distributions/10K/pixXspp_matrices/fromSDMs/IPCC5_RF_GAM/",
-                       pattern = paste0("pixXspp_10k_", params[["CC"]], "_", file.suff, ".Rdata"),
-                       full.names = TRUE)
-  load(fileCC)
+  fileCC <- paste0("pixXspp_10k_", params[["CC"]], "_", file.suff, ".Rdata")
+  master.fut <- prepInputs(url = "https://zenodo.org/api/records/13345395/files-archive",
+                           archive = "13345395.zip",
+                           targetFile = fileCC,
+                           destinationPath = "data/",
+                           fun = "load")
+  master.fut <- master.fut$master.fut
   cat(paste("\nUsing", basename(fileCC), "as future spp P/A file"))
 } else if (doLUC | doIUCN) {
   master.fut <- master.SDMpres

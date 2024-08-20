@@ -15,9 +15,7 @@ source("Analyses/labsAndCols.R")
 scenstr <- "CR_EN_VU"
 
 ## get spp P/A under future climate (no network filtering)
-sppPA.fut.file <- list.files(file.path("Spp_distributions", basename(masks.dir), "pixXspp_matrices/fromSDMs/IPCC5_RF_GAM"),
-                             pattern = scenstr, full.names = TRUE) 
-
+sppPA.fut.file <- list.files("data", pattern = paste0("pixXspp.*", scenstr), full.names = TRUE)
 
 ## compile tables of Pext and Sext spps IDs
 names(masterScen.files) <- NULL  ## use the actual file names to name the outFiles list
@@ -73,8 +71,7 @@ eval(parse(text = paste0(
 scenstr <- "hd_rcp85_wm_bin_RF"
 
 ## get spp P/A under future climate (no network filtering)
-sppPA.fut.file <- list.files(file.path("Spp_distributions", basename(masks.dir), "pixXspp_matrices/fromSDMs/IPCC5_RF_GAM"),
-                             pattern = scenstr, full.names = TRUE) 
+sppPA.fut.file <- list.files("data", pattern = paste0("pixXspp.*", scenstr), full.names = TRUE)
 
 ## compile tables of Pext and Sext spps IDs
 names(masterScen.files) <- NULL  ## use the actual file names to name the outFiles list
