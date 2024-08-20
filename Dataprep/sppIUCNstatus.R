@@ -27,7 +27,7 @@ sppIDs <- as.data.table(sppIDs)
 URL <- "https://www.eea.europa.eu/data-and-maps/data/european-red-lists-7/european-red-list/european-red-list-csv-files/at_download/file"
 speciesListIUCN <- prepInputs(targetFile = "European_Red_List_2017_December.csv",
                               archive = "European_Red_List_2017_December_csv.zip",
-                              destinationPath = "Spp_traits_habs/IUCN",
+                              destinationPath = "data/",
                               url = URL,
                               fun = "read.csv")
 speciesListIUCN <- as.data.table(speciesListIUCN)
@@ -44,7 +44,7 @@ speciesListIUCN <- speciesListIUCN[, ..cols]
 
 URL <- "https://www.eea.europa.eu/data-and-maps/data/european-red-lists-7/tables-metadata/tables-metadata-csv-files/at_download/file"
 IUCNdefinitions <- prepInputs(targetFile = "European_Red_List_2017_December_TableDefinitions.csv",
-                              destinationPath = "Spp_traits_habs/IUCN",
+                              destinationPath = "data/",
                               url = URL,
                               fun = "read.csv")
 IUCNdefinitions <- data.table(IUCNdefinitions)
@@ -165,4 +165,4 @@ if (any(is.na(sppIUCNstatus$ID)))
   stop("Bug!")
 
 ## save:
-write.table(sppIUCNstatus, file = "Spp_traits_habs/IUCN/BARM_IUCNstatus.txt")
+write.table(sppIUCNstatus, file = file.path(output.dir, "BARM_IUCNstatus.txt"))
