@@ -9,6 +9,9 @@
 ## this script aims at obtaining the IUCN status of each species in the metawed
 ## partly based on Louise O'Connors scrip, but more generic and attempts to find synonyms
 
+output.dir <- "Spp_traits_habs/IUCN/"
+dir.create(output.dir, recursive = TRUE)
+
 ## --------------------------------------------------
 ## OUR SPECIES LIST
 ## use spp x habitat table

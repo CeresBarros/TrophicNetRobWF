@@ -10,6 +10,9 @@
 ## this script aims at calculating the area of each GlobCover (v2.2) habitat category (300m2)
 ## per pixel of a grid at 10km2 and build pixel X habitat matrices used in network simulations
 
+output.dir <- "Habitats/Habitat_pixel/GlobCover"
+dir.create(output.dir, recursive = TRUE)
+
 ## LOAD DATA -------------------------------------------
 ## habitats raster
 ## habitats

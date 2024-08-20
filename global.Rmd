@@ -95,14 +95,8 @@ lakes <- prepInputs(url = "https://zenodo.org/api/records/13345395/files-archive
     presences.
 
 ```{r}
-## setting directories
-output.dir <- "data/Habitats/Habitat_pixel/GlobCover"
-dir.create(output.dir)
-
-## habitats
-habRasterFile <- "data/Habitats/GLOBCOVER.img"
-
 source("Dataprep/HABITATdata.R")
+```
 
 objsToRm <- setdiff(ls(all.names = TRUE), 
                     c("mask10k", "mask10kID", "lakes"))  ## keep these 
@@ -147,10 +141,6 @@ for (i in 1:3) gc(reset = TRUE)   ## free RAM
     mode. In interactive mode the script will loop through each line.
 
 ```{r}
-## output folder
-outputs.dir <- "Param_files/workflowDemo"
-dir.create(outputs.dir, recursive = TRUE)
-
 source("Dataprep/Make_param_files.R")
 
 objsToRm <- setdiff(ls(all.names = TRUE), 

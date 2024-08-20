@@ -8,6 +8,9 @@
 ## Ceres Aug 2024
 ## --------------------------------------------------
 
+outputs.dir <- "Param_files/workflowDemo"
+dir.create(outputs.dir, recursive = TRUE)
+
 ## this script creates .txt parameter lists so that networks can be run in batch mode
 ## in interactive mode the script will loop through lines
 
