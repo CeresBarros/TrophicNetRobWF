@@ -12,6 +12,7 @@ knitr::opts_chunk$set(cache = 2,
                       warning = FALSE,
                       message = FALSE,
                       tidy = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 options(repos = "https://cran.rstudio.com/")
 ```
 
