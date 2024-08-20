@@ -2,7 +2,7 @@
 ## PREY DISTRIBUTIONS PER SPP ACROSS BASELINE NETWORKS
 ## 10KM
 ## SUPPORTING SCRIPTS - For workflow demo
-## 
+##
 ## Ceres Aug 2024
 ## --------------------------------------------------
 
@@ -26,8 +26,8 @@ dietcat <- grep("^[A|B|M|R][[:digit:]]", rownames(BARMdiet.binary), invert = TRU
 quants <- c(0.1, 0.25, 0.5, 0.75, 0.90)
 
 cat(paste("***************\n", "Calculating extinction thresholds:\n", date(), "\n"))
-plan(multiprocess, workers = 2)
-future_lapply(files, calc.extThresh, quants = quants, out.dir = results.dir)
-plan(sequential)
+plan(multisession, workers = noCPUs)
+future_lapply(files, calc.extThresh, quants = quants, out.dir = results.dir, dietcat = dietcat)
+future:::ClusterRegistry("stop")
 cat(paste0("*done!\n", date(), "\n***************\n"))
 

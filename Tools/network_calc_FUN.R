@@ -505,7 +505,7 @@ parallelize.networkCalc <- function(outputs.dir, scen, temp.folder, do.pix = "al
     if (!parallel) {
       lapply(pix, network.calc)
     } else {
-      plan("multiprocess", workers = noCPUs)
+      plan(multisession, workers = noCPUs)
       tables <- future_lapply(pix, network.calc)
       future:::ClusterRegistry("stop")
       tables
