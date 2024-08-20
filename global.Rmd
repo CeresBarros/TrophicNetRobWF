@@ -302,6 +302,9 @@ parameters <- read.table("Param_files/workflowDemo/params_BL.txt", sep = ";")$V1
 useBLextthresh <- FALSE  ## use/calculate BL webs with extinction thresholds
 k <- 0                   ## define habitat threshold to consider a spp present(% higher than K, so e.g. k = 0 higher than 0)
 opt <- FALSE             ## define if using only optimal habitats (=TRUE), or optimal and secondary (=FALSE)
+do.pix <- "missing"    ## "missing" or "all"
+noCPUs <- 1
+parallel <- FALSE
 
 source("NetworkProjections/Network_sims.R")
 
@@ -324,6 +327,7 @@ for (i in 1:3) gc(reset = TRUE)   ## free RAM
 ```{r}
 ## setting directories
 results.dir <- "NetworkSims/Baseline_SDMpres_GlobCover/No_ext_thresh/"
+noCPUs <- 1
 source("Dataprep/Ext_thresh_minquantmedian_noprey.R")
 
 objsToRm <- setdiff(ls(all.names = TRUE), 
@@ -348,6 +352,9 @@ useBLextthresh = TRUE  ## use/calculate BL webs with extinction thresholds
 k = 0                  ## define habitat threshold to consider a spp present(% higher than K, so e.g. k = 0 higher than 0)
 opt <- FALSE           ## define if using only optimal habitats (=TRUE), or optimal and secondary (=FALSE)
 quants <- c("min", "median", "quant10", "quant25", "quant50", "quant75", "quant90")  ## choose quantiles or "all"
+do.pix <- "missing"    ## "missing" or "all"
+noCPUs <- 1
+parallel <- FALSE
 
 source("NetworkProjections/Network_sims.R")
 
@@ -405,15 +412,18 @@ for (i in 1:3) gc(reset = TRUE)   ## free RAM
     it for this demo.
 
 ```{r}
-quants <- "quant10"
-do.pix <- "all"    ## "missing" or "all"
-noCPUs <- 10
-parallel <- TRUE
-
 ## CC/extinction scenarios
 parameters <- read.table("Param_files/2021/params_Scen_FULL.txt", sep = ";")$V1
 ## subset to one GCM and stat model
 parameters <- grep("hd_rcp85_wm_bin_RF|current_wm_bin_RF", parameters, value = TRUE)
+## change these manually:
+useBLextthresh = TRUE  ## use/calculate BL webs with extinction thresholds
+k = 0                  ## define habitat threshold to consider a spp present(% higher than K, so e.g. k = 0 higher than 0)
+opt <- FALSE    
+quants <- "quant10"
+do.pix <- "missing"    ## "missing" or "all"
+noCPUs <- 1
+parallel <- FALSE
 
 source("NetworkProjections/Network_sims.R")
 
