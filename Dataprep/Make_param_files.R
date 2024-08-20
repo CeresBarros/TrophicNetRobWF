@@ -4,7 +4,7 @@
 ## SUPPORTING SCRIPTS - For workflow demo
 ##
 ## CREATE PARAMETER FILES
-## 
+##
 ## Ceres Aug 2024
 ## --------------------------------------------------
 
@@ -14,39 +14,36 @@ dir.create(outputs.dir, recursive = TRUE)
 ## this script creates .txt parameter lists so that networks can be run in batch mode
 ## in interactive mode the script will loop through lines
 
-## Get available climate scenarios/models
-CCmodels <- unique(sub("_allhab_tresh0.Rdata", "",
-                       sub("pixXspp_10k_", "", 
-                           list.files("Spp_distributions/10K/pixXspp_matrices/fromSDMs/IPCC5_RF_GAM/"))))
+## List available climate scenarios/models
+CCmodels <- c("current_wm_bin_RF", "hd_rcp85_wm_bin_RF")
 LUCmodels <- "noLUC"
-
-IUCNlevels <- c("CR_EN_VU")
+IUCNlevels <- c("CR_EN_VU", "noIUCN")
 
 ## PARAMETERS FOR CC & SPECIES EXTINCTIONS SIMULATIONS ---------------------------------------------------------
 params_CC_IUCN <- data.table(rbind(as.matrix(expand.grid(CCmodels[grepl("current", CCmodels)],
-                                              LUCmodels, 
+                                              LUCmodels,
                                               IUCNlevels[!grepl("noIUCN", IUCNlevels)],
                                               stringsAsFactors = FALSE)),
                         as.matrix(expand.grid(CCmodels[!grepl("current", CCmodels)],
-                                              LUCmodels, 
-                                              IUCNlevels[grepl("noIUCN", IUCNlevels)], 
+                                              LUCmodels,
+                                              IUCNlevels[grepl("noIUCN", IUCNlevels)],
                                               stringsAsFactors = FALSE))
 ))
 
 ## add other parameters for compatibility with scripts
-params_CC_IUCN[, `:=`(doCC = !grepl("current", Var1), 
-                      doNOdisp = FALSE, 
-                      doLUC = !grepl("noLUC", Var2), 
+params_CC_IUCN[, `:=`(doCC = !grepl("current", Var1),
+                      doNOdisp = FALSE,
+                      doLUC = !grepl("noLUC", Var2),
                       doPA = FALSE)]
 
 ## PARAMETERS FOR BASELINE SIMULATIONS ----------------------------------------------------------
-params_BL <- data.table(expand.grid(CCmodels[grepl("current", CCmodels)], 
-                                    LUCmodels, 
-                                    IUCNlevels[grepl("noIUCN", IUCNlevels)], 
+params_BL <- data.table(expand.grid(CCmodels[grepl("current", CCmodels)],
+                                    LUCmodels,
+                                    IUCNlevels[grepl("noIUCN", IUCNlevels)],
                                     stringsAsFactors = FALSE))
-params_BL[, `:=`(doCC = FALSE, 
-                 doNOdisp = FALSE, 
-                 doLUC = FALSE, 
+params_BL[, `:=`(doCC = FALSE,
+                 doNOdisp = FALSE,
+                 doLUC = FALSE,
                  doPA = FALSE)]
 
 ## SAVE FILES IN UNIX EOL STYLE

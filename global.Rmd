@@ -28,8 +28,9 @@ Require::Require(c(
   "ggplot2",
   "ggpubr",
   "patchwork",
-  "PredictiveEcology/reproducible@b4664aa7b9e51e9135a3b5f408ccde2de2d44a21",
+  "reproducible",
   "raster",
+  "rasterVis",
   "rredlist",
   "RSQLite",
   "sf",
@@ -38,19 +39,24 @@ Require::Require(c(
 libPaths = file.path("packages/"))
 
 ## install, but don't load
-Require::Require("qs", libPaths = file.path("packages/"), require = FALSE)
+Require::Require(c(
+  "qs",
+  "SpaDES.tools",
+  "terra"
+), libPaths = file.path("packages/"), require = FALSE)
 
 memory.limit(size = 16000)
 options(future.globals.maxSize = 3e+9,
         reproducible.useNewDigestAlgorithm = 2,
         reproducible.cachePath = "cache/",
-        reproducible.useGDAL = FALSE
+        reproducible.useGDAL = FALSE,
+        reproducible.rasterRead = "raster::raster",
         nwarnings = 100000000,
         max.print = 100000000)
 
-source("Rscripts/Tools/compilePextSext.R")
-source("Rscripts/Tools/summStatsByPixSpp.R")
-source("Rscripts/Tools/plotFuns.R")
+source("Tools/compilePextSext.R")
+source("Tools/summStatsByPixSpp.R")
+source("Tools/plotFuns.R")
 ```
 
 ```{r}
@@ -155,9 +161,7 @@ for (i in 1:3) gc(reset = TRUE)   ## free RAM
 ```{r}
 ## GET PARAMETERS --------------------------------------
 ## Baseline networks
-parameters <- read.table("Param_files/2021/params_BL.txt", sep = ";")$V1
-## subset to one  stat model
-parameters <- grep("current_wm_bin_RF", parameters, value = TRUE)
+parameters <- read.table("Param_files/workflowDemo/params_BL.txt", sep = ";")$V1
 
 ## change these manually:
 useBLextthresh <- FALSE  ## use/calculate BL webs with extinction thresholds
@@ -309,7 +313,6 @@ for (i in 1:3) gc(reset = TRUE)   ## free RAM
 bl.dir <- "NetworkSims/Baseline_SDMpres_GlobCover"
 res.dir <- scen.dir <- "NetworkSims/IUCN_CC_sims_GlobCover"
 out.dir <- "NetworkSims/IUCN_CC_sims_GlobCover/Analyses"
-masks.dir <-  "Masks/10k"
 
 fig.dir <- file.path(out.dir, "Figs")
 dir.create(fig.dir, recursive = TRUE)
@@ -343,8 +346,6 @@ for (i in 1:3) gc(reset = TRUE)   ## free RAM
 bl.dir <- "NetworkSims/Baseline_SDMpres_GlobCover"
 res.dir <- "NetworkSims/IUCN_CC_sims_GlobCover"
 out.dir <- "NetworkSims/IUCN_CC_sims_GlobCover/Analyses"
-masks.dir <-  "Masks/10k"
-
 fig.dir <- file.path(out.dir, "Figs")
 
 dir.create(fig.dir, recursive = TRUE)
