@@ -99,7 +99,7 @@ source("Dataprep/HABITATdata.R")
 ```
 
 objsToRm <- setdiff(ls(all.names = TRUE), 
-                    c("mask10k", "mask10kID", "lakes"))  ## keep these 
+                    c("mask10k", "mask10kID", "mask10kSHP", "lakes"))  ## keep these 
 rm(list = objsToRm)
 for (i in 1:3) gc(reset = TRUE)   ## free RAM
 ```
@@ -113,7 +113,7 @@ for (i in 1:3) gc(reset = TRUE)   ## free RAM
 source("Dataprep/sppIUCNstatus.R")
 
 objsToRm <- setdiff(ls(all.names = TRUE), 
-                    c("mask10k", "mask10kID", "lakes"))  ## keep these 
+                    c("mask10k", "mask10kID", "mask10kSHP", "lakes"))  ## keep these 
 rm(list = objsToRm)
 for (i in 1:3) gc(reset = TRUE)   ## free RAM
 ```
@@ -127,7 +127,7 @@ for (i in 1:3) gc(reset = TRUE)   ## free RAM
 source("Dataprep/Make_param_files.R")
 
 objsToRm <- setdiff(ls(all.names = TRUE), 
-                    c("mask10k", "mask10kID", "lakes"))  ## keep these 
+                    c("mask10k", "mask10kID", "mask10kSHP", "lakes"))  ## keep these 
 rm(list = objsToRm)
 for (i in 1:3) gc(reset = TRUE)   ## free RAM
 ```
@@ -167,7 +167,7 @@ opt <- FALSE             ## define if using only optimal habitats (=TRUE), or op
 source("NetworkProjections/Network_sims.R")
 
 objsToRm <- setdiff(ls(all.names = TRUE), 
-                    c("mask10k", "mask10kID", "lakes"))  ## keep these 
+                    c("mask10k", "mask10kID", "mask10kSHP", "lakes"))  ## keep these 
 rm(list = objsToRm)
 for (i in 1:3) gc(reset = TRUE)   ## free RAM
 ```
@@ -188,7 +188,7 @@ results.dir <- "NetworkSims/Baseline_SDMpres_GlobCover/No_ext_thresh/"
 source("Dataprep/Ext_thresh_minquantmedian_noprey.R")
 
 objsToRm <- setdiff(ls(all.names = TRUE), 
-                    c("mask10k", "mask10kID", "lakes"))  ## keep these 
+                    c("mask10k", "mask10kID", "mask10kSHP", "lakes"))  ## keep these 
 rm(list = objsToRm)
 for (i in 1:3) gc(reset = TRUE)   ## free RAM
 ```
@@ -213,7 +213,7 @@ quants <- c("min", "median", "quant10", "quant25", "quant50", "quant75", "quant9
 source("NetworkProjections/Network_sims.R")
 
 objsToRm <- setdiff(ls(all.names = TRUE), 
-                    c("mask10k", "mask10kID", "lakes"))  ## keep these 
+                    c("mask10k", "mask10kID", "mask10kSHP", "lakes"))  ## keep these 
 rm(list = objsToRm)
 for (i in 1:3) gc(reset = TRUE)   ## free RAM
 ```
@@ -235,7 +235,7 @@ dir.create(out.dir, recursive = TRUE)
 source("Analyses/1_SensAnalysis_BL.R")
 
 objsToRm <- setdiff(ls(all.names = TRUE), 
-                    c("mask10k", "mask10kID", "lakes"))  ## keep these 
+                    c("mask10k", "mask10kID", "mask10kSHP", "lakes"))  ## keep these 
 rm(list = objsToRm)
 for (i in 1:3) gc(reset = TRUE)   ## free RAM
 ```
@@ -279,7 +279,7 @@ parameters <- grep("hd_rcp85_wm_bin_RF|current_wm_bin_RF", parameters, value = T
 source("NetworkProjections/Network_sims.R")
 
 objsToRm <- setdiff(ls(all.names = TRUE), 
-                    c("mask10k", "mask10kID", "lakes"))  ## keep these 
+                    c("mask10k", "mask10kID", "mask10kSHP", "lakes"))  ## keep these 
 rm(list = objsToRm)
 for (i in 1:3) gc(reset = TRUE)   ## free RAM
 ```
@@ -331,7 +331,7 @@ source("Dataprep/make_Master_Files.R")
 source("Analyses/2_Rob&TL.R")
 
 objsToRm <- setdiff(ls(all.names = TRUE), 
-                    c("mask10k", "mask10kID", "lakes"))  ## keep these 
+                    c("mask10k", "mask10kID", "mask10kSHP", "lakes"))  ## keep these 
 rm(list = objsToRm)
 for (i in 1:3) gc(reset = TRUE)   ## free RAM
 ```
@@ -359,7 +359,7 @@ source("Dataprep/CompileRes_allMetrics.R")
 source("Analyses/3_Maps.R")
 
 objsToRm <- setdiff(ls(all.names = TRUE), 
-                    c("mask10k", "mask10kID", "lakes"))  ## keep these 
+                    c("mask10k", "mask10kID", "mask10kSHP", "lakes"))  ## keep these 
 rm(list = objsToRm)
 for (i in 1:3) gc(reset = TRUE)   ## free RAM
 ```
