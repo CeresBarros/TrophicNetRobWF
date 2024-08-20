@@ -31,12 +31,12 @@ speciesListIUCN <- prepInputs(targetFile = "European_Red_List_2017_December.csv"
                               url = URL,
                               fun = "read.csv")
 speciesListIUCN <- as.data.table(speciesListIUCN)
-if (any(grepl("?..", names(speciesListIUCN))))
+if (any(grepl("?..", names(speciesListIUCN), fixed = TRUE)))
   setnames(speciesListIUCN, names(speciesListIUCN),
-           sub("?..", "", names(speciesListIUCN)))
+           sub("?..", "", names(speciesListIUCN), fixed = TRUE))
 
-cols <- c("taxonomicRankClass", "taxonomicRankOrder", "taxonomicRankFamily", 
-          "taxonomicRankGenus", "taxonomicRankSpecies", "taxonomicRankSubspecies",        
+cols <- c("taxonomicRankClass", "taxonomicRankOrder", "taxonomicRankFamily",
+          "taxonomicRankGenus", "taxonomicRankSpecies", "taxonomicRankSubspecies",
           "scientificName", "endemicToEurope", "europeanRegionalRedListCategory",
           "endemicToEu", "euRegionalRedListCategory")
 
@@ -47,15 +47,15 @@ IUCNdefinitions <- prepInputs(targetFile = "European_Red_List_2017_December_Tabl
                               destinationPath = "data/",
                               url = URL,
                               fun = "read.csv")
-IUCNdefinitions <- data.table(IUCNdefinitions)
-if (any(grepl("?..", names(IUCNdefinitions))))
+IUCNdefinitions <- as.data.table(IUCNdefinitions)
+if (any(grepl("?..", names(IUCNdefinitions), fixed = TRUE)))
   setnames(IUCNdefinitions, names(IUCNdefinitions),
-           sub("?..", "", names(IUCNdefinitions)))
+           sub("?..", "", names(IUCNdefinitions), fixed = TRUE))
 
 ## subset data
 sppIUCNstatus <- speciesListIUCN[taxonomicRankClass %in% c("AMPHIBIA", "AVES", "REPTILIA", "MAMMALIA")]
 
-## checks and corrections 
+## checks and corrections
 IUCNlevels <- IUCNdefinitions[Field.name == "euRegionalRedListCategory", Codes]
 IUCNlevels <- unlist(strsplit(IUCNlevels, "; "))
 IUCNlevels <- sub("([[:alpha:]]{2}) -.*", "\\1", IUCNlevels)
@@ -119,14 +119,14 @@ if (any(is.na(sppIUCNstatus$europeanRegionalRedListCategory))) {
   message("Found missing IUCN status for:")
   message(paste(sum(is.na(sppIUCNstatus$europeanRegionalRedListCategory)), "species"))
   message("Trying to fill in with `rredlist::rl_search(..., region = 'europe')`")
-  
+
   missingSpp  <- sppIUCNstatus[is.na(europeanRegionalRedListCategory), Spp]
   missingSpp <- sub("_", " ", missingSpp)
   missingStatus <- Cache(findIUCNStatus,
                          species = missingSpp,
                          region = "europe")
   missingStatus <- data.table(Spp = missingSpp, status = missingStatus)
-  
+
   ## find synonyms for not found
   missingSpp <- missingStatus[status %in% c("NoAssessment", NA), Spp]
   missingStatus2 <- Cache(findIUCNAcceptedName,
@@ -135,21 +135,21 @@ if (any(is.na(sppIUCNstatus$europeanRegionalRedListCategory))) {
   missingStatus2[, Spp := sub("(.*)[[:digit:]]{1}$", "\\1", Spp)]
   missingStatus2 <- unique(missingStatus2)
   missingStatus2 <- missingStatus2[Spp != Synonyms]
-  
+
   ## try to find status for synonyms
   missingStatus2$status <- Cache(findIUCNStatus,
-                                 species = missingStatus2$Synonyms, 
+                                 species = missingStatus2$Synonyms,
                                  region = "europe")
   missingStatus2 <- unique(missingStatus2[, .(Spp, status)])
   if (any(duplicated(missingStatus2)))
     stop("Duplicated species!")
-  
+
   missingStatus <- missingStatus[!Spp %in% missingStatus2$Spp]
   missingStatus <- rbind(missingStatus, missingStatus2)
-  
+
   missingStatus[, Spp := sub(" ", "_", Spp)]
   setnames(missingStatus, "status", "europeanRegionalRedListCategory")
-  
+
 
   sppIUCNstatus1 <- sppIUCNstatus[!Spp %in% missingStatus$Spp]
   sppIUCNstatus2 <- sppIUCNstatus[Spp %in% missingStatus$Spp]
@@ -159,7 +159,7 @@ if (any(is.na(sppIUCNstatus$europeanRegionalRedListCategory))) {
 }
 
 cols <- c("ID", "Spp", "endemicToEurope", "europeanRegionalRedListCategory", "endemicToEu", "euRegionalRedListCategory")
-sppIUCNstatus <- sppIUCNstatus[, ..cols] 
+sppIUCNstatus <- sppIUCNstatus[, ..cols]
 
 if (any(is.na(sppIUCNstatus$ID)))
   stop("Bug!")
