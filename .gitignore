@@ -47,12 +47,14 @@ rsconnect/
 data/
 dataGOOD/
 cache/
+*_cache/
 
 # results
 Habitats/
 Spp_traits_habs/
 Param_files/
 NetworkSims/
+*_files/
 
 # packages
 packages/
