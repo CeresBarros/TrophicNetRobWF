@@ -13,7 +13,13 @@
 files <- list.files(results.dir, pattern = "spp10kWdietFUND_", full.names = TRUE)
 
 ## loading diet categories
-load("Spp_traits_habs/BARMdiet_binFUNDLINKS_50_nocann.RData")
+BARMdiet.binary <- prepInputs(url = "https://zenodo.org/api/records/13345395/files-archive",
+                              archive = "13345395.zip",
+                              targetFile = "BARMdiet_binFUNDLINKS_50_nocann.RData",
+                              destinationPath = "data/",
+                              fun = "load")
+## "unlist"
+BARMdiet.binary <- BARMdiet.binary$BARMdiet.binary_nocann
 dietcat <- grep("^[A|B|M|R][[:digit:]]", rownames(BARMdiet.binary), invert = TRUE, value = TRUE)
 
 ## define quantiles to use - note that min and median are added by calc.extThresh
