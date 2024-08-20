@@ -505,10 +505,9 @@ parallelize.networkCalc <- function(outputs.dir, scen, temp.folder, do.pix = "al
     if (!parallel) {
       lapply(pix, network.calc)
     } else {
-      library(future.apply)
       plan("multiprocess", workers = noCPUs)
       tables <- future_lapply(pix, network.calc)
-      plan("sequential")
+      future:::ClusterRegistry("stop")
       tables
     }
   } else warning("No pixels to compute")

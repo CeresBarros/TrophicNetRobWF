@@ -106,5 +106,3 @@ for (params in parameters) {
     }
   }
 }
-
-q("no")

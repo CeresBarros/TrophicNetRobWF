@@ -104,9 +104,6 @@ write.table(orig.pixhabs, file = file.path(output.dir, "tabulateGLC_10Km_GC_FILT
 ## before converting attribute NA's to spp whose habitats are all "optimal"
 BARM.habs[rowSums(BARM.habs, na.rm = TRUE) == 2*ncol(BARM.habs),] <- NA
 
-## TODO: put data in Zenodo and download from there
-fileHAB <- "Habitats/Habitat_pixel/GlobCover/tabulateGLC_10Km_GC_FILTRD_NOLAKES.txt"
-orig.pixhabs <- read.table(fileHAB, header = TRUE)
 orig.pixhabs$PAGENAME <- as.character(orig.pixhabs$PAGENAME)
 rownames(orig.pixhabs) <- orig.pixhabs$PAGENAME
 

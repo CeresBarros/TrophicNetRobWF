@@ -2,12 +2,12 @@
 ## ROBUSTNESS AND TROPHIC LEVEL
 ## 10KM
 ## SUPPORTING SCRIPTS - For workflow demo
-## 
+##
 ## Ceres Aug 2024
 ## -----------------------------------------------------------------
 
 ## source script for labels
-source("Analyses/labsAndCols.R") 
+source("Analyses/labsAndCols.R")
 
 ## (Baseline) trophic level of extinct species following extreme IUCN removal scenario
 # Considering the "extreme" targeted extinctions scenario -- i.e.
@@ -19,8 +19,8 @@ sppPA.fut.file <- list.files("data", pattern = paste0("pixXspp.*", scenstr), ful
 
 ## compile tables of Pext and Sext spps IDs
 names(masterScen.files) <- NULL  ## use the actual file names to name the outFiles list
-outFiles <- Map(masterScen.file = masterScen.files, 
-                f = compilePextSext, 
+outFiles <- Map(masterScen.file = masterScen.files,
+                f = compilePextSext,
                 MoreArgs = list(
                   masterBL.file = masterBL.files,
                   sppPA.fut.file = sppPA.fut.file
@@ -75,8 +75,8 @@ sppPA.fut.file <- list.files("data", pattern = paste0("pixXspp.*", scenstr), ful
 
 ## compile tables of Pext and Sext spps IDs
 names(masterScen.files) <- NULL  ## use the actual file names to name the outFiles list
-outFiles <- Map(masterScen.file = masterScen.files, 
-                f = compilePextSext, 
+outFiles <- Map(masterScen.file = masterScen.files,
+                f = compilePextSext,
                 MoreArgs = list(
                   masterBL.file = masterBL.files,
                   sppPA.fut.file = sppPA.fut.file

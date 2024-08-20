@@ -7,24 +7,18 @@
 ## ALL PIXELS
 ## --------------------------------------------------
 
-## this script should be sourced 
+## this script should be sourced
 
 ## LOADING NECESSARY RASTERS ------------------------
-## load projections - already filtered, lake rows removed
-pixhabs <- lapply(list.files("Habitats/Habitat_pixel/GLOBIO_GenLCC", pattern = "SSP", full.names = TRUE),
-                  FUN = function(x) as.data.table(read.table(x, header = TRUE)))
-names(pixhabs) <- sub("_EUagg_NOLAKES.txt", "", list.files("Habitats/Habitat_pixel/GLOBIO_GenLCC", pattern = "SSP"))
-pixhabs$SSP_base
-
 doCache <- if (redo) "overwrite" else TRUE
 
 all_metrics <- reproducible::Cache(loadResultsMetrics,
                                    bl.dir = bl.dir,
-                                   res.dir = res.dir, 
+                                   res.dir = res.dir,
                                    out.dir = out.dir,
                                    quant = quant,
                                    useCache = doCache,
-                                   userTags = "loadAllmetrics") 
+                                   userTags = "loadAllmetrics")
 
 
 ## transform Robustness

@@ -20,9 +20,6 @@ LUCmodels <- "noLUC"
 IUCNlevels <- c("CR_EN_VU")
 
 ## PARAMETERS FOR CC & SPECIES EXTINCTIONS SIMULATIONS ---------------------------------------------------------
-## subset CC models of interest
-CCmodels <- CCmodels[grepl("current|hd_rcp85", CCmodels)]
-
 params_CC_IUCN <- data.table(rbind(as.matrix(expand.grid(CCmodels[grepl("current", CCmodels)],
                                               LUCmodels, 
                                               IUCNlevels[!grepl("noIUCN", IUCNlevels)],
