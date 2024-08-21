@@ -117,7 +117,7 @@ plot(mask10k, col = "cadetblue", legend = FALSE)
 plot(lakes, add = TRUE, col = "darkgrey", legend = FALSE)
 
 ## OPTIONAL
-doSubsetting  <- TRUE ## set to FALSE if wanting to run computations for full workflow
+doSubsetting <- TRUE ## set to FALSE if wanting to run computations for full workflow
 
 if (doSubsetting) {
   ## crop to a smaller study area around the center point of the full study area.
@@ -497,7 +497,6 @@ source("Tools/Rob&TL_functions.R")
 source("Tools/compilePextSext.R")
 source("Tools/summStatsByPixSpp.R")
 source("Tools/plotFuns.R")
-
 
 ## get master files (make if need be)
 ## skips doing master files if they have been produced before
