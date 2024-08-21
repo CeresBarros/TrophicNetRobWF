@@ -1,0 +1,18 @@
+Package: TrophicNetRobWF
+Title: Trophic Networks Robustness Workflow
+Version: 0.0.0.9000
+Authors@R: c(
+    person("Ceres", "Barros", , "ceres.barros@nrcan-rncan.gc.ca", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0003-4036-977X")),
+    person("Gabriel", "Dansereau", , "gabriel.dansereau@umontreal.ca", role = "aut",
+           comment = c(ORCID = "0000-0002-2212-3584")),
+    person("João", "Braga", , "jbraga@ecofishresearch.com", role = "ctb",
+           comment = c(ORCID = "0000-0003-4153-8475"))
+  )
+Description: Workflow code to calculate trophic network robustness under
+    scenarios of change.
+Imports: 
+    rmarkdown,
+    knitr
+Encoding: UTF-8
+Language: en

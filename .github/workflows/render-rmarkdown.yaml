@@ -44,10 +44,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          packages: |
-            any::rcmdcheck
-            any::rmarkdown
-            any::knitr
+          extra-packages: |
             juba/rmdformats
 
       - name: Render Rmarkdown files and Commit Results
