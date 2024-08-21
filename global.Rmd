@@ -1,8 +1,15 @@
 ---
-title: "Workflow"
-author: "Ceres Barros"
-date: August 14 2024
-output: html_document
+title: "Trophic Networks' Robustness workflow"
+author: 
+  -   "Ceres Barros"
+  -   "Gabriel Dansereau"
+  -   "João Braga"
+date: August 21 2024
+output: 
+  rmdformats::downcute:    
+    toc_depth: 3
+    toc_float: true
+    code_folding: show
 editor_options: 
   chunk_output_type: console
 bibliography: references.bib
