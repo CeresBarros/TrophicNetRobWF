@@ -69,7 +69,8 @@ options(future.globals.maxSize = 3e+9,
 ```
 
 All data necessary to run this workflow is available in
-[Zenodo](https://zenodo.org/doi/10.5281/zenodo.13334864).
+[Zenodo](https://zenodo.org/doi/10.5281/zenodo.13334864), and
+automatically accessed by the code.
 
 ## Study area
 
