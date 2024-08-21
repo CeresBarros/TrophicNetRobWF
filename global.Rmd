@@ -19,8 +19,11 @@ options(repos = "https://cran.rstudio.com/")
 ```
 
 ```{r, cache = FALSE}
+pkgfolder <- "packages/" 
+dir.create(pkgfolder)
+
 ## package installation
-.libPaths("packages/")
+.libPaths(pkgfolder)
 options(repos = c("predictiveecology.r-universe.dev", getOption("repos")))
 
 if (!"Require" %in% installed.packages())
@@ -47,14 +50,14 @@ Require::Require(c(
   "sf",
   "CeresBarros/ToolsCB@master (HEAD)"
 ), 
-libPaths = file.path("packages/"))
+libPaths = pkgfolder)
 
 ## install, but don't load
 Require::Require(c(
   "qs",
   "SpaDES.tools",
   "terra"
-), libPaths = file.path("packages/"), require = FALSE)
+), libPaths = pkgfolder, require = FALSE)
 
 options(future.globals.maxSize = 3e+9,
         reproducible.useNewDigestAlgorithm = 2,
