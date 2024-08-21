@@ -3,7 +3,7 @@
 This repository contains the full R-based workflow used in Dansereau et al. (in prep.), 
 Box 3.
 
-The [full workflow](global.html) runs all necessary scripts to:
+The [full workflow](https://html-preview.github.io/?url=https://github.com/CeresBarros/TrophicNetRobWF/blob/main/global.html) runs all necessary scripts to:
 
 1.  Build baseline networks and networks under scenarios of change
 
