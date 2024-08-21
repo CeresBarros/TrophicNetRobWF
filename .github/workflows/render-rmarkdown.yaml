@@ -45,6 +45,19 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: |
+            any::ade4
+            any::cheddar
+            any::formatR
+            any::ggpubr
+            any::hypervolume
+            any::igraph
+            any::pdist
+            any::plyr
+            any::raster
+            any::reproducible
+            any::rgl
+            any::sf
+            any::terra
             juba/rmdformats
 
       - name: Render module Rmd
