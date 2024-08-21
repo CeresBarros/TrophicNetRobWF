@@ -1,4 +1,4 @@
-# TrophicNetRobWF - Trophic Networks' Robustness workflow
+# TrophicNetRobWF - Trophic Networks Robustness workflow
 
 This repository contains the full R-based workflow used in Dansereau et al. (in prep.), 
 Box 3.

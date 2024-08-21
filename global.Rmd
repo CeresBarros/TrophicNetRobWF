@@ -1,5 +1,5 @@
 ---
-title: "Trophic Networks' Robustness workflow"
+title: "Trophic Networks Robustness workflow"
 author: 
   -   "Ceres Barros"
   -   "Gabriel Dansereau"
