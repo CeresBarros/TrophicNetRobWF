@@ -75,6 +75,13 @@ options(future.globals.maxSize = 3e+9,
         max.print = 100000000)
 ```
 
+```{r, eval = isTRUE(as.logical(Sys.getenv("CI"))), echo = FALSE}
+preProcess(url = "https://zenodo.org/api/records/13345395/files-archive",
+           archive = "13345395.zip",
+           destinationPath = "data/",
+           fun = NA)
+``` 
+
 All data necessary to run this workflow is available in
 [Zenodo](https://zenodo.org/doi/10.5281/zenodo.13334864), and
 automatically accessed by the code.
