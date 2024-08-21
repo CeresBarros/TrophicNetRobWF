@@ -76,9 +76,16 @@ options(future.globals.maxSize = 3e+9,
 ```
 
 ```{r, eval = isTRUE(as.logical(Sys.getenv("CI"))), echo = FALSE}
-preProcess(url = "https://zenodo.org/api/records/13345395/files-archive",
-           archive = "13345395.zip",
-           destinationPath = "data/",
+library(reproducible)
+# preProcess(destinationPath = "data/",
+#            dlFun = 
+#              utils::download.file(url = "https://zenodo.org/api/records/13345395/files-archive", 
+#                                   destfile = "data/13345395.zip", 
+#                                   mode="wb"),
+#            fun = NA)
+
+preProcess(destinationPath = "data/",
+           targetFile = "13345395.zip",
            fun = NA)
 ``` 
 
