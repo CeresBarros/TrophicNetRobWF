@@ -73,8 +73,8 @@ All data necessary to run this workflow is available in
 
 ## Study area
 
-In Dansereau et al. (in prep.) trophic networks were calculated across
-European countries, Turkey, Georgia and European Russia, under baseline
+In @dansereau trophic networks were calculated across European
+countries, Turkey, Georgia and European Russia, under baseline
 conditions and scenarios of change.
 
 Here, we reduced computational burden by subsetting to a study area
@@ -561,6 +561,8 @@ source("Analyses/4_pubFigures.R")
 ## change to results "hold"/"show" once paper is out.
 knitr::include_graphics(file.path(fig.dir, "robMap_boxplotsTLXRobPoints_v.png"))
 ```
+
+## References
 
 [^1]: Habitat layer is the GlobCover v2.2 land-cover used in
     @maiorano2013.
