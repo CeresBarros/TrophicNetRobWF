@@ -58,6 +58,7 @@ jobs:
             any::rgl
             any::sf
             any::terra
+            any::withr
             juba/rmdformats
 
       - name: Render module Rmd
