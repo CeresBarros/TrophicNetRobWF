@@ -25,7 +25,7 @@ knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 options(repos = "https://cran.rstudio.com/")
 ```
 
-```{r, cache = FALSE}
+```{r, eval = !isTRUE(as.logical(Sys.getenv("CI"))), cache = FALSE}
 pkgfolder <- "packages/" 
 dir.create(pkgfolder)
 
@@ -65,6 +65,50 @@ Require::Require(c(
   "SpaDES.tools",
   "terra"
 ), libPaths = pkgfolder, require = FALSE)
+
+options(future.globals.maxSize = 3e+9,
+        reproducible.useNewDigestAlgorithm = 2,
+        reproducible.cachePath = "cache/",
+        reproducible.useGDAL = FALSE,
+        reproducible.rasterRead = "raster::raster",
+        nwarnings = 100000000,
+        max.print = 100000000)
+```
+
+```{r, eval = isTRUE(as.logical(Sys.getenv("CI"))), echo = FALSE, cache = FALSE}
+options(repos = c("predictiveecology.r-universe.dev", getOption("repos")))
+
+if (!"Require" %in% installed.packages())
+  install.packages("Require")
+
+Require::Require(c(
+  "cheddar",
+  "colorspace",
+  "data.table",
+  "dplyr",
+  "exactextractr",
+  "foreign",
+  "future",
+  "future.apply",
+  "ggExtra",
+  "ggplot2",
+  "ggpubr",
+  "patchwork",
+  "reproducible",
+  "raster",
+  "rasterVis",
+  "rredlist",
+  "RSQLite",
+  "sf",
+  "CeresBarros/ToolsCB@master (HEAD)"
+))
+
+## install, but don't load
+Require::Require(c(
+  "qs",
+  "SpaDES.tools",
+  "terra"
+))
 
 options(future.globals.maxSize = 3e+9,
         reproducible.useNewDigestAlgorithm = 2,
