@@ -22,6 +22,16 @@ habRaster <- prepInputs(url = "https://zenodo.org/api/records/13345395/files-arc
                         destinationPath = "data/",
                         fun = "raster::raster")
 
+## project polygons for no info loss
+if (!compareCRS(mask10kSHP, habRaster)) {
+  mask10kSHP <- Cache(spTransform,
+                      x = mask10kSHP,
+                      CRSobj = crs(habRaster))
+}
+
+## crop
+habRaster <- crop(habRaster, extent(mask10kSHP))
+
 ## spp x habitat table - with GlobCover classes
 BARM.habs <- prepInputs(url = "https://zenodo.org/api/records/13345395/files-archive",
                         archive = "13345395.zip",
@@ -50,16 +60,6 @@ if (length(notInSpp)) {
 
 
 ## COUNT HABITATS IN LARGER GRID ----------------------
-## project polygons for no info loss
-if (!compareCRS(mask10kSHP, habRaster)) {
-  mask10kSHP <- Cache(spTransform,
-                      x = mask10kSHP,
-                      CRSobj = crs(habRaster))
-}
-
-## crop for faster extraction
-habRaster <- crop(habRaster, extent(mask10kSHP))
-
 ## extract
 mask10kSHP <- st_as_sf(mask10kSHP)
 orig.pixhabs2List <- Cache(exact_extract,
