@@ -52,6 +52,9 @@ jobs:
             juba/rmdformats
 
       - name: Render module Rmd
+        env:
+          RGL_USE_NULL: TRUE
+          DISPLAY: ":99"
         run: |
           rmarkdown::render("global.Rmd", encoding = "UTF-8")
         shell: Rscript {0}
