@@ -51,6 +51,7 @@ jobs:
           cache: "always"
           cache-version: 1
           extra-packages: |
+            any::formatR
             any::knitr
             any::rmarkdown
             juba/rmdformats
