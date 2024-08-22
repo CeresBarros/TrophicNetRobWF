@@ -121,6 +121,7 @@ options(timeout = 600)
 utils::download.file(url = "https://zenodo.org/api/records/13345395/files-archive",
                      destfile = "data/13345395.zip",
                      mode = "wb")
+unzip("data/13345395.zip", exdir = "data/", overwrite = TRUE, junkpaths = TRUE)
 ``` 
 
 All data necessary to run this workflow is available in
