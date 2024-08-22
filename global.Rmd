@@ -76,6 +76,9 @@ options(future.globals.maxSize = 3e+9,
 ```
 
 ```{r, eval = isTRUE(as.logical(Sys.getenv("CI"))), echo = FALSE, cache = FALSE}
+## MacOS systems having lots of issues with pkg install here, so install dealt with by
+## r-lib/actions/setup-r-dependencies@v2 using DESCRIPTION
+
 options(repos = c("predictiveecology.r-universe.dev", getOption("repos")))
 
 if (!"Require" %in% installed.packages())
@@ -113,22 +116,11 @@ options(future.globals.maxSize = 3e+9,
 ```
 
 ```{r, eval = isTRUE(as.logical(Sys.getenv("CI"))), echo = FALSE}
-# library(reproducible)
-# preProcess(destinationPath = "data/",
-#            dlFun =
-#              utils::download.file(url = "https://zenodo.org/api/records/13345395/files-archive",
-#                                   destfile = "data/13345395.zip",
-#                                   mode = "wb"),
-#            fun = NA)
-
+## GHA: problem with Win zip using prepInputs - ! error -103 with zipfile in unzGetCurrentFileInfo
+options(timeout = 600)
 utils::download.file(url = "https://zenodo.org/api/records/13345395/files-archive",
                      destfile = "data/13345395.zip",
                      mode = "wb")
-
-# preProcess(url = "https://zenodo.org/api/records/13345395/files-archive",
-#            destinationPath = "data/",
-#            targetFile = "13345395.zip",
-#            fun = NA)
 ``` 
 
 All data necessary to run this workflow is available in
