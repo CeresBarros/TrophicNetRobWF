@@ -45,7 +45,7 @@ BARM.habs <- as.matrix(BARM.habs[, which(colnames(BARM.habs) != "SPPname")])    
 if (!compareRaster(lakes, mask10k, stopiffalse = FALSE)) {
   lakes <- Cache(postProcess,
                  x = lakes,
-                 rasterToMatch = mask10kSHP)
+                 to = mask10kSHP)
 }
 
 sppHabs <- as.numeric(sub("X", "", colnames(BARM.habs)))
