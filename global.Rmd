@@ -84,7 +84,8 @@ library(reproducible)
 #                                   mode="wb"),
 #            fun = NA)
 
-preProcess(destinationPath = "data/",
+preProcess(url = "https://zenodo.org/api/records/13345395/files-archive",
+           destinationPath = "data/",
            targetFile = "13345395.zip",
            fun = NA)
 ``` 
