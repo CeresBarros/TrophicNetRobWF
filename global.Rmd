@@ -142,21 +142,21 @@ Note that all lakes are removed.
 ```{r, results = "hold", fig.cap = "Full study area in blue, with (removed) lakes shown in grey. Subset study area in black."}
 ## 10K grid dbf - pixel IDs 
 mask10kID <- prepInputs(url = "https://zenodo.org/api/records/13345395/files-archive",
-                        archive = "13334865.zip",
+                        archive = "13345395.zip",
                         targetFile = "reference_grid_10km.img.vat.dbf",
                         destinationPath = "data/",
                         fun = "foreign::read.dbf")
 
 ## 10K grid poly
 mask10kSHP <- prepInputs(url = "https://zenodo.org/api/records/13345395/files-archive",
-                         archive = "13334865.zip",
+                         archive = "13345395.zip",
                          targetFile = "grid_10Km.shp",
                          destinationPath = "data/")
 mask10kSHP <- as_Spatial(mask10kSHP)
 
 ## 10K grid raster in final projection
 mask10k <- prepInputs(url = "https://zenodo.org/api/records/13345395/files-archive",
-                      archive = "13334865.zip",
+                      archive = "13345395.zip",
                       targetFile = "reference_grid_10km.img",
                       destinationPath = "data/",
                       fun = "raster::raster")
@@ -164,7 +164,7 @@ mask10k[] <- mask10k[]  ## bring raster to memory
 
 ## lakes raster
 lakes <- prepInputs(url = "https://zenodo.org/api/records/13345395/files-archive",
-                    archive = "13334865.zip",
+                    archive = "13345395.zip",
                     targetFile = "lakes10k.img",
                     destinationPath = "data/",
                     fun = "raster::raster")

@@ -17,7 +17,7 @@ if (exists("returnMaster")) {
 
 ## diet categories
 BARMdiet.binary_nocann <- prepInputs(url = "https://zenodo.org/api/records/13345395/files-archive",
-                                     archive = "13334865.zip",
+                                     archive = "13345395.zip",
                                      targetFile = "BARMdiet_binFUNDLINKS_50_nocann.RData",
                                      destinationPath = "data/",
                                      fun = "load")
