@@ -46,20 +46,8 @@ jobs:
         with:
           cache-version: 2
           extra-packages: |
-            any::ade4
-            any::cheddar
-            any::formatR
-            any::ggpubr
-            any::hypervolume
-            any::igraph
-            any::pdist
-            any::plyr
-            any::raster
-            any::reproducible
-            any::rgl
-            any::sf
-            any::terra
-            any::withr
+            any::knitr
+            any::rmardown
             juba/rmdformats
 
       - name: Render module Rmd

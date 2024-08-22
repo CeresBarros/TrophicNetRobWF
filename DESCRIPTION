@@ -12,7 +12,28 @@ Authors@R: c(
 Description: Workflow code to calculate trophic network robustness under
     scenarios of change.
 Imports: 
-    rmarkdown,
-    knitr
+    cheddar,
+    colorspace,
+    data.table,
+    dplyr,
+    exactextractr,
+    foreign,
+    future,
+    future.apply,
+    ggExtra,
+    ggplot2,
+    ggpubr,
+    patchwork,
+    qs,
+    reproducible,
+    raster,
+    rasterVis,
+    rredlist,
+    RSQLite,
+    sf,
+    SpaDES.tools,
+    ToolsCB
+Remotes:
+    CeresBarros/ToolsCB@master
 Encoding: UTF-8
 Language: en

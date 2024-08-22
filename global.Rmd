@@ -103,13 +103,6 @@ Require::Require(c(
   "CeresBarros/ToolsCB@master (HEAD)"
 ))
 
-## install, but don't load
-Require::Require(c(
-  "qs",
-  "SpaDES.tools",
-  "terra"
-))
-
 options(future.globals.maxSize = 3e+9,
         reproducible.useNewDigestAlgorithm = 2,
         reproducible.cachePath = "cache/",
