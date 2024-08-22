@@ -52,7 +52,7 @@ jobs:
           cache-version: 1
           extra-packages: |
             any::knitr
-            any::rmardown
+            any::rmarkdown
             juba/rmdformats
 
       - name: Render module Rmd
