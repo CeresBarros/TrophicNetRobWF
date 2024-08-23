@@ -21,6 +21,7 @@ jobs:
         config:
           - {os: macOS-latest,   r: 'release'}
           - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: '4.3'}
           - {os: ubuntu-20.04,   r: 'release'}
 
     env:
@@ -57,12 +58,20 @@ jobs:
             juba/rmdformats
 
       - name: Render module Rmd
+        if: runner.os != 'windows'
         env:
           RGL_USE_NULL: TRUE
           DISPLAY: ":99"
         run: |
           rmarkdown::render("global.Rmd", encoding = "UTF-8")
         shell: Rscript {0}
+
+      - name: Render module Rmd - test Win
+        if: runner.os == 'windows'
+        run: |
+          rmarkdown::render("globalTest.Rmd", encoding = "UTF-8")
+        shell: Rscript {0}
+
 
       - name: Commit results
         run: |

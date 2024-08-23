@@ -1,0 +1,100 @@
+---
+title: "Trophic Networks Robustness workflow"
+author: 
+  -   "Ceres Barros"
+  -   "Gabriel Dansereau"
+  -   "João Braga"
+date: August 21 2024
+output: 
+  rmdformats::downcute:    
+    toc_depth: 3
+    toc_float: true
+    code_folding: show
+editor_options: 
+  chunk_output_type: console
+bibliography: references.bib
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(cache = 2,
+                      warning = FALSE,
+                      message = FALSE,
+                      results = "hide",
+                      tidy = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+options(repos = "https://cran.rstudio.com/")
+```
+
+```{r, eval = isTRUE(as.logical(Sys.getenv("CI"))), echo = FALSE, cache = FALSE}
+## MacOS systems having lots of issues with pkg install here, so install dealt with by
+## r-lib/actions/setup-r-dependencies@v2 using DESCRIPTION
+
+options(repos = c("predictiveecology.r-universe.dev", getOption("repos")))
+
+if (!"Require" %in% installed.packages())
+  install.packages("Require")
+
+Require::Require(c(
+  "cheddar",
+  "colorspace",
+  "data.table",
+  "dplyr",
+  "exactextractr",
+  "foreign",
+  "future",
+  "future.apply",
+  "ggExtra",
+  "ggplot2",
+  "ggpubr",
+  "patchwork",
+  "reproducible",
+  "raster",
+  "rasterVis",
+  "rredlist",
+  "RSQLite",
+  "sf",
+  "CeresBarros/ToolsCB@master (HEAD)"
+))
+
+options(future.globals.maxSize = 3e+9,
+        reproducible.useNewDigestAlgorithm = 2,
+        reproducible.cachePath = "cache/",
+        reproducible.useGDAL = FALSE,
+        reproducible.rasterRead = "raster::raster",
+        nwarnings = 100000000,
+        max.print = 100000000)
+```
+
+```{r, eval = isTRUE(as.logical(Sys.getenv("CI"))), echo = FALSE}
+## GHA: problem with Win zip using prepInputs - ! error -103 with zipfile in unzGetCurrentFileInfo
+options(timeout = 600)
+utils::download.file(url = "https://zenodo.org/api/records/13345395/files-archive",
+                     destfile = "data/13345395.zip",
+                     mode = "wb")
+unzip("data/13345395.zip", exdir = "data/", overwrite = TRUE, junkpaths = TRUE)
+``` 
+
+All data necessary to run this workflow is available in
+[Zenodo](https://zenodo.org/doi/10.5281/zenodo.13334864), and
+automatically accessed by the code.
+
+## Study area
+
+In @dansereau trophic networks were calculated across European
+countries, Turkey, Georgia and European Russia, under baseline
+conditions and scenarios of change.
+
+Here, we reduced computational burden by subsetting to a study area
+polygon drawn with random borders and placed in central Europe. The user
+is free to change this study area as they see fit.
+
+Note that all lakes are removed.
+
+```{r, results = "hold", fig.cap = "Full study area in blue, with (removed) lakes shown in grey. Subset study area in black."}
+## 10K grid dbf - pixel IDs 
+mask10kID <- prepInputs(url = "https://zenodo.org/api/records/13345395/files-archive",
+                        archive = "13345395.zip",
+                        targetFile = "reference_grid_10km.img.vat.dbf",
+                        destinationPath = "data/",
+                        fun = "foreign::read.dbf")
+```
