@@ -72,6 +72,9 @@ utils::download.file(url = "https://zenodo.org/api/records/13345395/files-archiv
                      destfile = "data/13345395.zip",
                      mode = "wb")
 unzip("data/13345395.zip", exdir = "data/", overwrite = TRUE, junkpaths = TRUE)
+message(list.files("data/"))
+
+message(any(grepl("reference_grid_10km.img.vat.dbf", list.files("data/"))))
 ``` 
 
 All data necessary to run this workflow is available in
