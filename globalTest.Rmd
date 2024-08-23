@@ -92,9 +92,7 @@ Note that all lakes are removed.
 
 ```{r, results = "hold", fig.cap = "Full study area in blue, with (removed) lakes shown in grey. Subset study area in black."}
 ## 10K grid dbf - pixel IDs 
-mask10kID <- prepInputs(url = "https://zenodo.org/api/records/13345395/files-archive",
-                        archive = "13345395.zip",
-                        targetFile = "reference_grid_10km.img.vat.dbf",
+mask10kID <- prepInputs(targetFile = "reference_grid_10km.img.vat.dbf",
                         destinationPath = "data/",
                         fun = "foreign::read.dbf")
 ```
