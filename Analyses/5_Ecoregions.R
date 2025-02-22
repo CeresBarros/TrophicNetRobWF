@@ -86,20 +86,25 @@ rast_iucn_eco <- terra::rasterize(ecoregions_resc, mask10k, "medianRobustnessIUC
 ## Plot results
 
 # Plot
-t1 <- "Climate Change"
-t2 <- "IUCN extinctions"
+t1 <- "a) Climate Change Scenario"
+t2 <- "b) IUCN Extinctions Scenario"
 gg1 <- ggplot() +
   geom_sf(data = ecoregions_resc, aes(fill = medianRobustnessClim)) +
-  scale_fill_viridis_c(direction=-1, limits = c(0.7, 1.0), name = "Median\nEcoregion\nRobustness") +
+  scale_fill_viridis_c(direction=-1, limits = c(0.7, 1.0), guide = "none") +
   labs(title = t1)
 gg2 <- ggplot() +
   geom_sf(data = ecoregions_resc, aes(fill = medianRobustnessIUCN)) +
-  scale_fill_viridis_c(direction=-1, limits = c(0.7, 1.0), name = "Median\nEcoregion\nRobustness") +
-  labs(title = t1)
+  scale_fill_viridis_c(direction=-1, limits = c(0.7, 1.0),
+                       name = "Median\nEcoregion\nRobustness\n") +
+  labs(title = t2)
 (gg3 <- gg1 + gg2)
+(gg4 <- (gg1 + theme_void()) + (gg2 + theme_void()))
+(gg5 <- (gg1 + theme_pubr()) + (gg2 + theme_pubr(legend="right")))
 
 # Export figures
-ggsave(plot = gg1, filename = file.path(fig.dir, "rob_ecoregion_clim.png"), dpi = 300)
-ggsave(plot = gg2, filename = file.path(fig.dir, "rob_ecoregion_iucn.png"), dpi = 300)
-ggsave(plot = gg3, filename = file.path(fig.dir, "rob_ecoregion_both.png"),
-       dpi = 300, height = 10, width = 16)
+ggsave(plot = gg3, filename = "Figures/rob_ecoregion_both.png",
+       dpi = 300, height = 6, width = 14)
+ggsave(plot = gg4, filename = "Figures/rob_ecoregion_void.png",
+       dpi = 300, height = 6, width = 14)
+ggsave(plot = gg5, filename = "Figures/rob_ecoregion_pubr.png",
+       dpi = 300, height = 6, width = 14)
