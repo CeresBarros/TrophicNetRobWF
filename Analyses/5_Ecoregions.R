@@ -51,24 +51,28 @@ ecoregions_shp <- terra::vect("Ecoregions/Ecoregions2017.shp")
 ecoregions_vec <- terra::project(ecoregions_shp, rast_iucn)
 # terra::mask(crop(ecoregions_vec, mask10k), as(terra::rast(mask10k), "SpatVector"))
 
-# Crop to mask extent
-ecoregions_vec <- crop(ecoregions_vec, mask10k)
+# Load mask polygon
+mask10kSHP <- prepInputs(url = "https://zenodo.org/api/records/13345395/files-archive",
+                         archive = "13345395.zip",
+                         targetFile = "grid_10Km.shp",
+                         destinationPath = "data/")
+# mask10kSHP <- as_Spatial(mask10kSHP)
+mask10kSHP <- as(mask10kSHP, "SpatVector")
+mask10kSHP_agg <- aggregate(mask10kSHP)
 
+# Crop to mask extent
+ecoregions_mask <- mask(crop(ecoregions_vec, mask10kSHP_agg), mask10kSHP_agg)
 
 ## Summarize results by ecoregion
 
 # Extract median per ecoregion
-ecoregions_poly <- sf::st_as_sf(ecoregions_vec)
+ecoregions_poly <- sf::st_as_sf(ecoregions_mask)
 ecoregions_poly$medianRobustnessClim <- exact_extract(rast_clim, ecoregions_poly, "median")
 ecoregions_poly$medianRobustnessIUCN <- exact_extract(rast_iucn, ecoregions_poly, "median")
 
-# Remove ecoregions without any data
-ecoregions_noNA <- filter(ecoregions_poly, !is.na(medianRobustnessClim))
-plot(ecoregions_noNA["medianRobustnessClim"])
-plot(ecoregions_noNA["medianRobustnessIUCN"])
 
 # Rescale values below 0.7
-ecoregions_resc <- ecoregions_noNA
+ecoregions_resc <- ecoregions_poly
 ecoregions_resc$medianRobustnessClim <-
   with(ecoregions_resc, ifelse(medianRobustnessClim > 0.7, medianRobustnessClim, 0.7))
 ecoregions_resc$medianRobustnessIUCN <-
