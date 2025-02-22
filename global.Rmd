@@ -174,7 +174,7 @@ plot(mask10k, col = "cadetblue", legend = FALSE)
 plot(lakes, add = TRUE, col = "darkgrey", legend = FALSE)
 
 ## OPTIONAL
-doSubsetting <- TRUE ## set to FALSE if wanting to run computations for full workflow
+doSubsetting <- FALSE ## set to FALSE if wanting to run computations for full workflow
 
 if (doSubsetting) {
   ## crop to a smaller study area around the center point of the full study area.
@@ -194,10 +194,11 @@ if (doSubsetting) {
   
   lakes <- crop(mask10k, subsetArea) |>
     mask(mask = subsetArea)
+  
+  plot(subsetArea, add = TRUE, col = "black", legend = FALSE,
+       main = "Full (blue) and subset (black) study areas.")
 }
 
-plot(subsetArea, add = TRUE, col = "black", legend = FALSE,
-     main = "Full (blue) and subset (black) study areas.")
 
 ```
 
