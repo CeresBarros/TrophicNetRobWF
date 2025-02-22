@@ -58,3 +58,6 @@ NetworkSims/
 
 # packages
 packages/
+
+# zip archives
+*.zip
