@@ -71,12 +71,13 @@ ecoregions_poly$medianRobustnessClim <- exact_extract(rast_clim, ecoregions_poly
 ecoregions_poly$medianRobustnessIUCN <- exact_extract(rast_iucn, ecoregions_poly, "median")
 
 
-# Rescale values below 0.7
+# Rescale values below arbitrary threshold
 ecoregions_resc <- ecoregions_poly
+rv <- 0.70
 ecoregions_resc$medianRobustnessClim <-
-  with(ecoregions_resc, ifelse(medianRobustnessClim > 0.7, medianRobustnessClim, 0.7))
+  with(ecoregions_resc, ifelse(medianRobustnessClim > rv, medianRobustnessClim, rv))
 ecoregions_resc$medianRobustnessIUCN <-
-  with(ecoregions_resc, ifelse(medianRobustnessIUCN > 0.7, medianRobustnessIUCN, 0.7))
+  with(ecoregions_resc, ifelse(medianRobustnessIUCN > rv, medianRobustnessIUCN, rv))
 
 # Rasterize ecoregions
 rast_clim_eco <- terra::rasterize(ecoregions_resc, mask10k, "medianRobustnessClim")
@@ -90,19 +91,19 @@ t1 <- "a) Climate Change Scenario"
 t2 <- "b) IUCN Extinctions Scenario"
 gg1 <- ggplot() +
   geom_sf(data = ecoregions_resc, aes(fill = medianRobustnessClim)) +
-  scale_fill_viridis_c(direction=-1, limits = c(0.7, 1.0), guide = "none") +
+  scale_fill_viridis_c(direction=-1, limits = c(rv, 1.0), guide = "none") +
   labs(title = t1) +
   theme_void()
 gg2 <- ggplot() +
   geom_sf(data = ecoregions_resc, aes(fill = medianRobustnessIUCN)) +
-  scale_fill_viridis_c(direction=-1, limits = c(0.7, 1.0),
+  scale_fill_viridis_c(direction=-1, limits = c(rv, 1.0),
                        name = "Median\nEcoregion\nRobustness\n") +
   labs(title = t2) +
   theme_void()
 (ggh <- gg1 + gg2)
 (ggv <- gg1 /
           (gg2 +
-           scale_fill_viridis_c(direction=-1, limits = c(0.7, 1.0),
+           scale_fill_viridis_c(direction=-1, limits = c(rv, 1.0),
                                 name = "Median Ecoregion Robustness") +
            theme(legend.position="bottom",
                  legend.title = element_text(hjust = 0.5),
@@ -113,8 +114,26 @@ gg2 <- ggplot() +
             )
 )
 
+hist1 <- ggplot(data = ecoregions_resc, aes(x = medianRobustnessClim)) +
+  geom_histogram(aes(fill = after_stat(x)),
+                 binwidth=0.05, boundary = rv) +
+  scale_fill_viridis_c(direction = -1)
+hist2 <- ggplot(data = ecoregions_resc, aes(x = medianRobustnessIUCN)) +
+  geom_histogram(aes(fill = after_stat(x)),
+                 binwidth=0.05, boundary = rv) +
+  scale_fill_viridis_c(direction = -1)
+(hists <- hist1 / hist2)
+
+# # All pixel data
+# ggplot(data = scen_clim, aes(x = invRobust)) +
+#   geom_histogram(aes(fill = after_stat(x))) +
+#   scale_fill_viridis_c(direction = -1)
+
+
 # Export figures
 ggsave(plot = ggh, filename = "Figures/rob_ecoregion_void.png",
        dpi = 300, height = 6, width = 14)
 ggsave(plot = ggv, filename = "Figures/rob_ecoregion_void_v.png",
+       dpi = 300, height = 14, width = 6)
+ggsave(plot = hists, filename = "Figures/rob_ecoregion_hists.png",
        dpi = 300, height = 14, width = 6)
