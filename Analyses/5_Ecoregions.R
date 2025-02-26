@@ -91,20 +91,30 @@ t2 <- "b) IUCN Extinctions Scenario"
 gg1 <- ggplot() +
   geom_sf(data = ecoregions_resc, aes(fill = medianRobustnessClim)) +
   scale_fill_viridis_c(direction=-1, limits = c(0.7, 1.0), guide = "none") +
-  labs(title = t1)
+  labs(title = t1) +
+  theme_void()
 gg2 <- ggplot() +
   geom_sf(data = ecoregions_resc, aes(fill = medianRobustnessIUCN)) +
   scale_fill_viridis_c(direction=-1, limits = c(0.7, 1.0),
                        name = "Median\nEcoregion\nRobustness\n") +
-  labs(title = t2)
-(gg3 <- gg1 + gg2)
-(gg4 <- (gg1 + theme_void()) + (gg2 + theme_void()))
-(gg5 <- (gg1 + theme_pubr()) + (gg2 + theme_pubr(legend="right")))
+  labs(title = t2) +
+  theme_void()
+(ggh <- gg1 + gg2)
+(ggv <- gg1 /
+          (gg2 +
+           scale_fill_viridis_c(direction=-1, limits = c(0.7, 1.0),
+                                name = "Median Ecoregion Robustness") +
+           theme(legend.position="bottom",
+                 legend.title = element_text(hjust = 0.5),
+                 legend.title.position="bottom",
+                 legend.key.width = unit(5.0, "lines"),
+                 legend.key.height = unit(0.7, "lines")
+                 )
+            )
+)
 
 # Export figures
-ggsave(plot = gg3, filename = "Figures/rob_ecoregion_both.png",
+ggsave(plot = ggh, filename = "Figures/rob_ecoregion_void.png",
        dpi = 300, height = 6, width = 14)
-ggsave(plot = gg4, filename = "Figures/rob_ecoregion_void.png",
-       dpi = 300, height = 6, width = 14)
-ggsave(plot = gg5, filename = "Figures/rob_ecoregion_pubr.png",
-       dpi = 300, height = 6, width = 14)
+ggsave(plot = ggv, filename = "Figures/rob_ecoregion_void_v.png",
+       dpi = 300, height = 14, width = 6)
