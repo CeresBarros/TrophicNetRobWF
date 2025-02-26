@@ -73,7 +73,7 @@ ecoregions_poly$medianRobustnessIUCN <- exact_extract(rast_iucn, ecoregions_poly
 
 # Rescale values below arbitrary threshold
 ecoregions_resc <- ecoregions_poly
-rv <- 0.70
+rv <- 0.8
 ecoregions_resc$medianRobustnessClim <-
   with(ecoregions_resc, ifelse(medianRobustnessClim > rv, medianRobustnessClim, rv))
 ecoregions_resc$medianRobustnessIUCN <-
@@ -104,7 +104,11 @@ gg2 <- ggplot() +
 (ggv <- gg1 /
           (gg2 +
            scale_fill_viridis_c(direction=-1, limits = c(rv, 1.0),
-                                name = "Median Ecoregion Robustness") +
+                                name = "Median Ecoregion Robustness",
+                                breaks = seq(rv, 1.0, by=0.05),
+                                labels = c(paste("<", format(rv, nsmall = 2)),
+                                           format(seq(rv, 1.0, by=0.05)[-1], nsmall = 2))
+                                ) +
            theme(legend.position="bottom",
                  legend.title = element_text(hjust = 0.5),
                  legend.title.position="bottom",
