@@ -139,5 +139,7 @@ ggsave(plot = ggh, filename = "Figures/rob_ecoregion_void.png",
        dpi = 300, height = 6, width = 14)
 ggsave(plot = ggv, filename = "Figures/rob_ecoregion_void_v.png",
        dpi = 300, height = 14, width = 6)
+ggsave(plot = ggv, filename = "Figures/fig2.jpg",
+       dpi = 300, height = 14, width = 6)
 ggsave(plot = hists, filename = "Figures/rob_ecoregion_hists.png",
        dpi = 300, height = 14, width = 6)
