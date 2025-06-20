@@ -87,8 +87,8 @@ rast_iucn_eco <- terra::rasterize(ecoregions_resc, mask10k, "medianRobustnessIUC
 ## Plot results
 
 # Plot
-t1 <- "(A) Climate Change Scenario"
-t2 <- "(B) IUCN Extinctions Scenario"
+t1 <- "a) Climate Change Scenario"
+t2 <- "b) IUCN Extinctions Scenario"
 gg1 <- ggplot() +
   geom_sf(data = ecoregions_resc, aes(fill = medianRobustnessClim)) +
   scale_fill_viridis_c(direction=-1, limits = c(rv, 1.0), guide = "none") +
@@ -97,22 +97,10 @@ gg1 <- ggplot() +
 gg2 <- ggplot() +
   geom_sf(data = ecoregions_resc, aes(fill = medianRobustnessIUCN)) +
   scale_fill_viridis_c(direction=-1, limits = c(rv, 1.0),
-                      name = "Median\nEcoregion\nRobustness",
-                      breaks = seq(rv, 1.0, by=0.05),
-                      labels = c(paste0("< ", format(rv, nsmall = 2)),
-                                 format(seq(rv, 1.0, by=0.05)[-1], nsmall = 2)),
-                      guide = guide_legend(label.hjust = 1)
-                      ) +
+                       name = "Median\nEcoregion\nRobustness\n") +
   labs(title = t2) +
   theme_void()
-(ggh <- gg1 + gg2 +
-  theme(legend.title = element_text(vjust = 4),
-        legend.text = element_text(hjust = 1),
-        legend.text.position = "left",
-        legend.key.width = unit(0.5, "lines"),
-        legend.key.height = unit(2.0, "lines")
-        )
-)
+(ggh <- gg1 + gg2)
 (ggv <- gg1 /
           (gg2 +
            scale_fill_viridis_c(direction=-1, limits = c(rv, 1.0),
