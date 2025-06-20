@@ -144,7 +144,9 @@ ggsave(plot = hists, filename = "Figures/rob_ecoregion_hists.png",
 
 # Export for manuscript
 ggsave(plot = ggv, filename = "Figures/fig2.jpg", # for submitted manuscript
-       dpi = 200, height = 14, width = 6)
+       dpi = 300, height = 14, width = 6)
+ggsave(plot = ggh, filename = "Figures/fig2_h.jpg", # for submitted manuscript
+       dpi = 300, height = 6, width = 14)
 ggsave(plot = ggv, filename = "Figures/fig2.pdf", # for preprint
        dpi = 200, height = 14, width = 6)
 
