@@ -1,4 +1,5 @@
 source("Analyses/0_loadPackages.R")
+library(legendry)
 
 ## Extract results
 
@@ -97,7 +98,12 @@ gg1 <- ggplot() +
 gg2 <- ggplot() +
   geom_sf(data = ecoregions_resc, aes(fill = medianRobustnessIUCN)) +
   scale_fill_viridis_c(direction=-1, limits = c(rv, 1.0),
-                       name = "Median\nEcoregion\nRobustness\n") +
+                       name = "Median\nEcoregion\nRobustness\n",
+                       guide = guide_colbar(
+                          show = c(TRUE, FALSE),
+                          oob = "squish"
+                        )
+                       ) +
   labs(title = t2) +
   theme_void()
 (ggh <- gg1 + gg2)
