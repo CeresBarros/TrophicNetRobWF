@@ -87,8 +87,8 @@ rast_iucn_eco <- terra::rasterize(ecoregions_resc, mask10k, "medianRobustnessIUC
 ## Plot results
 
 # Plot
-t1 <- "a) Climate Change Scenario"
-t2 <- "b) IUCN Extinctions Scenario"
+t1 <- "(A) Climate Change Scenario"
+t2 <- "(B) IUCN Extinctions Scenario"
 gg1 <- ggplot() +
   geom_sf(data = ecoregions_resc, aes(fill = medianRobustnessClim)) +
   scale_fill_viridis_c(direction=-1, limits = c(rv, 1.0), guide = "none") +
